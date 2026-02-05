@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold-50: #fbf8eb;
+  --color-gold-100: #f5eed3;
+  --color-gold-200: #ead9a6;
+  --color-gold-300: #dec076;
+  --color-gold-400: #d4af37; /* Primary Gold */
+  --color-gold-500: #b59226;
+  --color-gold-600: #96741c;
+  --color-gold-700: #7a5c18;
+  --color-gold-800: #664d19;
+  --color-gold-900: #55401b;
+
+  --color-rich-black-50: #f6f6f6;
+  --color-rich-black-100: #e7e7e7;
+  --color-rich-black-200: #d1d1d1;
+  --color-rich-black-300: #b0b0b0;
+  --color-rich-black-400: #888888;
+  --color-rich-black-500: #6d6d6d;
+  --color-rich-black-600: #5d5d5d;
+  --color-rich-black-700: #4f4f4f;
+  --color-rich-black-800: #454545;
+  --color-rich-black-900: #0a0a0a; /* Deep Background */
+  --color-rich-black-950: #050505;
+
+  --font-amiri: var(--font-amiri);
+  --font-inter: var(--font-inter);
+}
+
+:root {
+  --background: var(--color-rich-black-950);
+  --foreground: var(--color-gold-50);
+  --primary: var(--color-gold-400);
+  --primary-foreground: var(--color-rich-black-950);
+  --secondary: var(--color-rich-black-800);
+  --secondary-foreground: var(--color-gold-100);
+  --muted: var(--color-rich-black-900);
+  --muted-foreground: var(--color-gold-200);
+  --accent: var(--color-gold-500);
+  --accent-foreground: var(--color-rich-black-900);
+  --border: var(--color-rich-black-700);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-amiri);
+  color: var(--primary);
+}
+
+.nav-link {
+  @apply text-gold-200 hover:text-gold-400 transition-colors duration-200 font-medium;
+}
+
+.active-link {
+  @apply text-gold-400 font-bold border-b-2 border-gold-400;
+}
