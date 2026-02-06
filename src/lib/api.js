@@ -1,11 +1,17 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'https://bet-el-bon-api.vercel.app/api',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api', // Fallback for local dev
     headers: {
         'Content-Type': 'application/json',
     },
 })
+
+// helper to set manager/admin token
+export const setAuthToken = (token) => {
+    if (token) api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    else delete api.defaults.headers.common['Authorization']
+}
 
 // ================= DRINKS =================
 export const fetchDrinks = async () => {
@@ -26,6 +32,17 @@ export const updateDrink = async (id, data) => {
 export const deleteDrink = async (id) => {
     const res = await api.delete(`/drink/${id}`)
     return res.data
+}
+
+// ================ MANAGER ================
+export const managerLogin = async (password) => {
+    const { data } = await api.post('/manager/login', { password })
+    return data
+}
+
+export const fetchManagerSummary = async () => {
+    const { data } = await api.get('/manager/summary')
+    return data
 }
 
 // ================= ORDERS =================// Orders

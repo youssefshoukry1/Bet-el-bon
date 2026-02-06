@@ -6,8 +6,17 @@ import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { useState } from 'react'
 import { Building2, Plus, Trash2 } from 'lucide-react'
+import { AdminGuard } from '@/components/auth/AdminGuard'
 
 export default function AdminInstitutionsPage() {
+    return (
+        <AdminGuard level="owner">
+            <InstitutionsContent />
+        </AdminGuard>
+    )
+}
+
+function InstitutionsContent() {
     const queryClient = useQueryClient()
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [formData, setFormData] = useState({ name: '', code: '' })

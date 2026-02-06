@@ -7,7 +7,17 @@ import { Card, CardContent } from '@/components/ui/Card'
 import { Trash2, Plus } from 'lucide-react'
 import { Modal } from '@/components/ui/Modal'
 
+import { AdminGuard } from '@/components/auth/AdminGuard'
+
 export default function AdminPage() {
+    return (
+        <AdminGuard level="owner">
+            <MenuContent />
+        </AdminGuard>
+    )
+}
+
+function MenuContent() {
     const queryClient = useQueryClient()
     const { data: drinks = [], isLoading } = useQuery({ queryKey: ['drinks'], queryFn: fetchDrinks })
     const [isCreateOpen, setIsCreateOpen] = useState(false)

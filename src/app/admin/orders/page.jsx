@@ -9,8 +9,17 @@ import { Check, Clock, Loader2, ArrowRight } from 'lucide-react'
 import { InstitutionSelector } from '@/components/features/InstitutionSelector'
 import { Settings } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { AdminGuard } from '@/components/auth/AdminGuard'
 
 export default function AdminOrdersPage() {
+    return (
+        <AdminGuard level="admin">
+            <AdminOrdersContent />
+        </AdminGuard>
+    )
+}
+
+function AdminOrdersContent() {
     const queryClient = useQueryClient()
     const [institutionId, setInstitutionId] = useState(null)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)

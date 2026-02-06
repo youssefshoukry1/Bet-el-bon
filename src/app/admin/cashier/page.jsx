@@ -6,8 +6,17 @@ import { fetchOrders, updateOrderStatus } from '@/lib/api'
 import { Check, Clock, Settings, Banknote } from 'lucide-react'
 import { InstitutionSelector } from '@/components/features/InstitutionSelector'
 import { useState, useEffect } from 'react'
+import { AdminGuard } from '@/components/auth/AdminGuard'
 
 export default function CashierPage() {
+    return (
+        <AdminGuard level="admin">
+            <CashierContent />
+        </AdminGuard>
+    )
+}
+
+function CashierContent() {
     const queryClient = useQueryClient()
     const [institutionId, setInstitutionId] = useState(null)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
