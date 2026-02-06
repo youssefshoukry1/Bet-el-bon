@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { useCart } from '@/context/CartContext'
 import { Coffee, Check, Flame } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { motion } from 'framer-motion'
 
 export function ProductModal({ product, isOpen, onClose }) {
     const { addToCart } = useCart()
@@ -61,23 +62,33 @@ export function ProductModal({ product, isOpen, onClose }) {
                 </div>
 
                 {/* Size Selection */}
+                {/* Size Selection */}
                 <div>
-                    <label className="block text-sm font-medium text-rich-black-300 mb-3">Select Size</label>
+                    <label className="block text-sm font-medium text-rich-black-300 mb-3 tracking-wide uppercase text-xs">Size</label>
                     <div className="grid grid-cols-3 gap-3">
                         {product.sizes.map((s) => (
                             <button
                                 key={s.size}
                                 onClick={() => setSize(s.size)}
                                 className={cn(
-                                    "flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all",
+                                    "relative overflow-hidden flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 group",
                                     size === s.size
-                                        ? "border-gold-500 bg-gold-500/10 text-gold-400"
-                                        : "border-rich-black-700 hover:border-rich-black-500 text-rich-black-400"
+                                        ? "border-gold-500 bg-gold-500/10 text-gold-100 shadow-[0_0_10px_rgba(212,175,55,0.1)]"
+                                        : "border-rich-black-700 bg-rich-black-800/50 text-rich-black-400 hover:bg-rich-black-800 hover:border-rich-black-600"
                                 )}
                             >
-                                <Coffee size={size === 'small' ? 16 : size === 'medium' ? 20 : 24} className="mb-2" />
-                                <span className="capitalize font-medium">{s.size}</span>
-                                <span className="text-xs mt-1 opacity-80">{s.price} EGP</span>
+                                <Coffee size={size === 'small' ? 20 : size === 'medium' ? 24 : 28}
+                                    className={cn("mb-2 transition-transform duration-300", size === s.size && "scale-110 text-gold-400")}
+                                />
+                                <span className="capitalize font-bold text-sm">{s.size}</span>
+                                <span className="text-xs mt-1 opacity-70 group-hover:opacity-100 transition-opacity">{s.price} EGP</span>
+
+                                {size === s.size && (
+                                    <motion.div
+                                        layoutId="activeSize"
+                                        className="absolute inset-0 border-2 border-gold-500 rounded-xl pointer-events-none"
+                                    />
+                                )}
                             </button>
                         ))}
                     </div>
@@ -85,40 +96,53 @@ export function ProductModal({ product, isOpen, onClose }) {
 
                 {/* Customizations */}
                 <div>
-                    <label className="block text-sm font-medium text-rich-black-300 mb-3">Customizations</label>
+                    <label className="block text-sm font-medium text-rich-black-300 mb-3 tracking-wide uppercase text-xs">Customizations</label>
                     <div className="space-y-4">
                         {/* Spiced Option */}
                         {product.options?.spiced && (
                             <div
                                 onClick={() => setCustomizations(prev => ({ ...prev, spiced: !prev.spiced }))}
-                                className="flex items-center justify-between p-3 rounded-lg border border-rich-black-700 hover:bg-rich-black-800 cursor-pointer"
+                                className={cn(
+                                    "flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer",
+                                    customizations.spiced
+                                        ? "bg-amber-900/20 border-amber-500/50"
+                                        : "bg-rich-black-800/30 border-rich-black-700 hover:bg-rich-black-800/50"
+                                )}
                             >
-                                <div className="flex items-center gap-2">
-                                    <Flame size={18} className="text-amber-500" />
-                                    <span className="text-gold-100">Spiced (Mahweja)</span>
+                                <div className="flex items-center gap-3">
+                                    <div className={cn("p-2 rounded-full", customizations.spiced ? "bg-amber-500/20 text-amber-500" : "bg-rich-black-800 text-rich-black-500")}>
+                                        <Flame size={20} />
+                                    </div>
+                                    <div>
+                                        <span className={cn("block font-bold", customizations.spiced ? "text-amber-100" : "text-rich-black-300")}>Spiced (Mahweja)</span>
+                                        <span className="text-xs text-rich-black-500">Add traditional spices</span>
+                                    </div>
                                 </div>
-                                <div className={cn("w-6 h-6 rounded-full border flex items-center justify-center transition-colors", customizations.spiced ? "bg-gold-500 border-gold-500 text-rich-black-900" : "border-rich-black-500")}>
-                                    {customizations.spiced && <Check size={14} />}
+                                <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
+                                    customizations.spiced ? "bg-amber-500 border-amber-500 text-rich-black-900" : "border-rich-black-600"
+                                )}>
+                                    {customizations.spiced && <Check size={14} strokeWidth={4} />}
                                 </div>
                             </div>
                         )}
 
-                        {/* Sugar Options - Only if product allows sugar */}
+                        {/* Sugar Options */}
                         {product.options?.sugar && (
-                            <div className="space-y-2">
-                                <span className="text-sm text-gold-200">Sugar Level</span>
+                            <div className="space-y-3">
+                                <span className="text-xs uppercase text-rich-black-400 font-bold tracking-wider">Sugar Level</span>
                                 <div className="grid grid-cols-4 gap-2">
                                     {sugarOptions.map(opt => (
                                         <button
                                             key={opt.id}
                                             onClick={() => setCustomizations(prev => ({ ...prev, sugar: opt.id }))}
                                             className={cn(
-                                                "py-2 px-1 text-xs rounded border transition-all",
+                                                "py-3 px-1 text-[11px] md:text-xs rounded-lg border transition-all flex flex-col items-center gap-1",
                                                 customizations.sugar === opt.id
-                                                    ? "bg-gold-500 text-rich-black-900 border-gold-500 font-bold"
-                                                    : "border-rich-black-700 text-rich-black-400 hover:border-rich-black-500"
+                                                    ? "bg-gold-500 text-rich-black-900 border-gold-500 font-bold shadow-sm"
+                                                    : "bg-rich-black-800/30 border-rich-black-700 text-rich-black-400 hover:bg-rich-black-800"
                                             )}
                                         >
+                                            {customizations.sugar === opt.id && <Check size={12} className="mb-0.5" />}
                                             {opt.label}
                                         </button>
                                     ))}

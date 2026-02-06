@@ -20,7 +20,7 @@ export function Modal({ isOpen, onClose, children, title }) {
     return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -29,12 +29,13 @@ export function Modal({ isOpen, onClose, children, title }) {
                         className="fixed inset-0 bg-rich-black-950/80 backdrop-blur-sm"
                     />
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-lg rounded-xl border border-rich-black-700 bg-rich-black-900 shadow-2xl overflow-hidden"
+                        initial={{ opacity: 0, y: "100%" }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: "100%" }}
+                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                        className="relative w-full sm:max-w-lg bg-rich-black-900 border-t sm:border border-rich-black-700 shadow-2xl overflow-hidden rounded-t-3xl sm:rounded-xl max-h-[90vh] sm:max-h-[85vh] flex flex-col"
                     >
-                        <div className="flex items-center justify-between p-4 border-b border-rich-black-800">
+                        <div className="flex items-center justify-between p-4 border-b border-rich-black-800 shrink-0">
                             <h2 className="text-xl font-amiri text-gold-400">{title}</h2>
                             <button
                                 onClick={onClose}
@@ -43,7 +44,7 @@ export function Modal({ isOpen, onClose, children, title }) {
                                 <X size={24} />
                             </button>
                         </div>
-                        <div className="max-h-[80vh] overflow-y-auto">
+                        <div className="overflow-y-auto p-4 sm:p-6 pb-safe-area">
                             {children}
                         </div>
                     </motion.div>

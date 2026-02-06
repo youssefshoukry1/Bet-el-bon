@@ -1,5 +1,5 @@
 "use client"
-import { fetchOrders } from '@/lib/api'
+import { fetchOrders, fetchInstitutions } from '@/lib/api'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { InstitutionSelector } from '@/components/features/InstitutionSelector'
@@ -32,14 +32,32 @@ export default function QueuePage() {
     // Optional: Auto-scroll or pagination if list is too long?
     // For now, simple list.
 
+    // Fetch institutions to lookup name
+    const { data: institutions = [] } = useQuery({
+        queryKey: ['institutions'],
+        queryFn: fetchInstitutions
+    })
+
+    const currentBranch = institutions.find(i => i._id === institutionId)
+
     return (
         <div className="min-h-screen bg-rich-black-950 text-white p-4 lg:p-8 overflow-hidden flex flex-col">
             {/* Header */}
-            <header className="mb-8 text-center border-b border-rich-black-800 pb-4">
+            <header className="mb-8 text-center border-b border-rich-black-800 pb-4 relative">
                 <h1 className="text-4xl md:text-6xl font-amiri font-bold text-gold-400 tracking-wider">
-                    ORDER STATUS
+                    {currentBranch ? currentBranch.name : 'ORDER STATUS'}
                 </h1>
-                <p className="text-rich-black-400 mt-2 text-lg uppercase tracking-widest">Please wait for your number</p>
+                <p className="text-rich-black-400 mt-2 text-lg uppercase tracking-widest">
+                    {currentBranch ? 'Please wait for your number' : 'Select a branch'}
+                </p>
+
+                {/* Settings Trigger - Top Right */}
+                <button
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="absolute top-0 right-0 p-2 text-rich-black-600 hover:text-gold-400 transition-colors"
+                >
+                    <Settings size={28} />
+                </button>
             </header>
 
             {/* Content Grid */}
@@ -110,13 +128,7 @@ export default function QueuePage() {
 
             </div>
 
-            {/* Hidden Settings Trigger (Bottom Right) */}
-            <button
-                onClick={() => setIsSettingsOpen(true)}
-                className="fixed bottom-4 right-4 text-rich-black-800 hover:text-white transition-colors opacity-20 hover:opacity-100"
-            >
-                <Settings />
-            </button>
+
 
             <InstitutionSelector
                 isOpen={isSettingsOpen}
