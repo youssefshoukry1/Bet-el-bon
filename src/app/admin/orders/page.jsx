@@ -6,20 +6,36 @@ import { Badge } from '@/components/ui/Badge'
 import { fetchOrders, updateOrderStatus } from '@/lib/api'
 import { Check, Clock, Loader2, ArrowRight } from 'lucide-react'
 
+import { InstitutionSelector } from '@/components/features/InstitutionSelector'
+import { Settings } from 'lucide-react'
+import { useState, useEffect } from 'react'
+
 export default function AdminOrdersPage() {
     const queryClient = useQueryClient()
+    const [institutionId, setInstitutionId] = useState(null)
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+
+    useEffect(() => {
+        // Check for admin orders screen settings
+        // We can reuse the same modal approach
+        const stored = localStorage.getItem('adminOrders_instId')
+        if (stored) setInstitutionId(stored)
+        else setIsSettingsOpen(true)
+    }, [])
 
     // Poll for orders every 5s
     const { data: orders = [], isLoading } = useQuery({
-        queryKey: ['orders'],
-        queryFn: fetchOrders,
+        queryKey: ['orders', institutionId],
+        queryFn: () => fetchOrders(institutionId),
+        enabled: !!institutionId,
         refetchInterval: 5000
     })
 
     const { mutate, isPending } = useMutation({
         mutationFn: updateOrderStatus,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['orders'] })
+            // invalidate the specific query with the institution ID
+            queryClient.invalidateQueries({ queryKey: ['orders', institutionId] })
         }
     })
 
@@ -33,13 +49,22 @@ export default function AdminOrdersPage() {
         return statusPriority[a.status] - statusPriority[b.status] || new Date(b.createdAt) - new Date(a.createdAt)
     })
 
-    if (isLoading) return <div className="p-8 text-gold-400">Loading Orders...</div>
+    if (isLoading && institutionId) return <div className="p-8 text-gold-400">Loading Orders...</div>
+    if (!institutionId) return <div className="p-8 text-gold-400">Please select a branch...</div>
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-amiri font-bold text-gold-400 mb-6">Order Management</h1>
+        <div className="space-y-6 relative">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-amiri font-bold text-gold-400">Order Management</h1>
+                <Button variant="outline" size="sm" onClick={() => setIsSettingsOpen(true)}>
+                    <Settings className="mr-2" size={16} /> Switch Branch
+                </Button>
+            </div>
 
             <div className="space-y-4">
+                {sortedOrders.length === 0 && (
+                    <div className="text-center py-12 text-rich-black-400">No orders found for this branch.</div>
+                )}
                 {sortedOrders.map(order => (
                     <Card key={order._id} className={`
                         border-l-4 
@@ -107,6 +132,17 @@ export default function AdminOrdersPage() {
                     </Card>
                 ))}
             </div>
+
+            <InstitutionSelector
+                isOpen={isSettingsOpen}
+                onClose={() => { if (institutionId) setIsSettingsOpen(false) }}
+                onSelect={(inst) => {
+                    setInstitutionId(inst._id)
+                    localStorage.setItem('adminOrders_instId', inst._id)
+                    setIsSettingsOpen(false)
+                    // No need to reload, react-query handles key change
+                }}
+            />
         </div>
     )
 }
