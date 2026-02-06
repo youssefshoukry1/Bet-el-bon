@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useCart } from '@/context/CartContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -9,6 +9,8 @@ import { ArrowLeft, Banknote, Smartphone } from 'lucide-react'
 import Link from 'next/link'
 import { useMutation } from '@tanstack/react-query'
 import { createOrder } from '@/lib/api'
+import { InstitutionSelector } from '@/components/features/InstitutionSelector'
+import { Building2 } from 'lucide-react'
 
 export default function CheckoutPage() {
     const { items, total, clearCart } = useCart()
@@ -16,14 +18,40 @@ export default function CheckoutPage() {
     const [tableNumber, setTableNumber] = useState('')
     const [paymentMethod, setPaymentMethod] = useState('cash')
     const [notes, setNotes] = useState('')
+    const [selectedInst, setSelectedInst] = useState(null)
+    const [isInstModalOpen, setIsInstModalOpen] = useState(false)
+
+
+    
+    useEffect(() => {
+        const stored = JSON.parse(localStorage.getItem('selectedInstitution'))
+        if (stored) {
+            setSelectedInst(stored)
+        } else {
+            setIsInstModalOpen(true)
+        }
+    }, [])
+
+    const handleInstSelect = (inst) => {
+        setSelectedInst(inst)
+        localStorage.setItem('selectedInstitution', JSON.stringify(inst))
+        setIsInstModalOpen(false)
+    }
 
     // Mutation for creating order
     const { mutate, isPending } = useMutation({
         mutationFn: createOrder,
         onSuccess: (data) => {
             clearCart()
-            // Persist order ID so user can return to track it
+
+            // Persist order ID - Support Multiple Orders
+            const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]')
+            const updatedOrders = [data._id, ...existingOrders]
+            localStorage.setItem('myOrders', JSON.stringify(updatedOrders))
+
+            // Also keep legacy 'activeOrderId' for direct redirect for now, but we will redirect to orders list usually
             localStorage.setItem('activeOrderId', data._id)
+
             router.push(`/order/${data._id}`)
         },
         onError: (error) => {
@@ -43,6 +71,11 @@ export default function CheckoutPage() {
     }
 
     const handlePlaceOrder = () => {
+        if (!selectedInst) {
+            setIsInstModalOpen(true)
+            return
+        }
+
         // Transform cart items to match backend expectation if needed
         const orderItems = items.map(item => ({
             drinkId: item._id,
@@ -54,7 +87,8 @@ export default function CheckoutPage() {
         mutate({
             items: orderItems,
             paymentMethod,
-            notes
+            notes,
+            institutionId: selectedInst._id
         })
     }
 
@@ -148,6 +182,29 @@ export default function CheckoutPage() {
                         </CardContent>
                     </Card>
 
+                    {/* Branch Selection */}
+                    <Card>
+                        <CardHeader className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <CardTitle>Location</CardTitle>
+                            <Button variant="outline" size="sm" onClick={() => setIsInstModalOpen(true)}>
+                                Change Branch
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            {selectedInst ? (
+                                <div className="flex items-center gap-3 text-gold-100">
+                                    <Building2 className="text-gold-500" />
+                                    <div>
+                                        <div className="font-bold">{selectedInst.name}</div>
+                                        <div className="text-xs text-rich-black-400">{selectedInst.code}</div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-red-400">Please select a branch</div>
+                            )}
+                        </CardContent>
+                    </Card>
+
                     <Button
                         onClick={handlePlaceOrder}
                         size="lg"
@@ -158,6 +215,12 @@ export default function CheckoutPage() {
                     </Button>
                 </div>
             </motion.div>
+
+            <InstitutionSelector
+                isOpen={isInstModalOpen}
+                onClose={() => { if (selectedInst) setIsInstModalOpen(false) }}
+                onSelect={handleInstSelect}
+            />
         </div>
     )
 }

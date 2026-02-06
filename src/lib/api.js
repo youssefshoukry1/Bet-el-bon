@@ -28,25 +28,43 @@ export const deleteDrink = async (id) => {
     return res.data
 }
 
-// ================= ORDERS =================
-export const createOrder = async (data) => {
-    const res = await api.post('/order/create', data)
-    return res.data
+// ================= ORDERS =================// Orders
+export const createOrder = async (orderData) => {
+    const { data } = await api.post('/order/create', orderData)
+    return data
 }
 
-export const fetchOrders = async () => {
-    const res = await api.get('/order/getAll')
-    return res.data
+export const fetchOrders = async (params) => {
+    // accept string or object
+    const query = typeof params === 'string' ? `?institutionId=${params}` : ''
+    const { data } = await api.get(`/order/getAll${query}`)
+    return data
 }
 
 export const fetchOrderById = async (id) => {
-    const res = await api.get(`/order/${id}`)
-    return res.data
+    const { data } = await api.get(`/order/${id}`)
+    return data
 }
 
-export const updateOrderStatus = async ({ id, status, paymentStatus }) => {
-    const res = await api.put(`/order/${id}`, { status, paymentStatus })
-    return res.data
+export const updateOrderStatus = async ({ id, status }) => {
+    const { data } = await api.put(`/order/${id}`, { status })
+    return data
+}
+
+// Institutions
+export const fetchInstitutions = async () => {
+    const { data } = await api.get('/institution/all')
+    return data
+}
+
+export const createInstitution = async (instData) => {
+    const { data } = await api.post('/institution/create', instData)
+    return data
+}
+
+export const deleteInstitution = async (id) => {
+    const { data } = await api.delete(`/institution/${id}`)
+    return data
 }
 
 export default api

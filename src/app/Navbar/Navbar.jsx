@@ -11,12 +11,12 @@ export default function Navbar() {
   const pathname = usePathname();
   const { setIsOpen, items } = useCart()
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0)
-  const [activeOrderId, setActiveOrderId] = React.useState(null)
+  const [hasOrders, setHasOrders] = React.useState(false)
 
   React.useEffect(() => {
-    // Check for active order ID in local storage
-    const storedId = localStorage.getItem('activeOrderId')
-    if (storedId) setActiveOrderId(storedId)
+    // Check for active orders list
+    const storedOrders = JSON.parse(localStorage.getItem('myOrders') || '[]')
+    setHasOrders(storedOrders.length > 0)
   }, [pathname]) // Re-check on navigation changes
 
   return (
@@ -29,9 +29,9 @@ export default function Navbar() {
 
         <div className='flex items-center gap-6'>
           <Link href="/" className={cn("nav-link", pathname === '/' && "active-link")}>Menu</Link>
-          {activeOrderId && (
-            <Link href={`/order/${activeOrderId}`} className={cn("nav-link", pathname.includes('/order') && "active-link")}>
-              Track Order
+          {hasOrders && (
+            <Link href="/orders" className={cn("nav-link", pathname.startsWith('/order') && "active-link")}>
+              My Orders
             </Link>
           )}
 
