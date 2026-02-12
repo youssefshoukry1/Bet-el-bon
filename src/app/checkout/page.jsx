@@ -44,19 +44,23 @@ export default function CheckoutPage() {
         onSuccess: (data) => {
             clearCart()
 
+            const orderId = data._id || data.order?._id
+
+            // Persist order ID - Support Multiple Orders
+            if (orderId) {
+                const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]')
+                // Avoid duplicates
+                if (!existingOrders.includes(orderId)) {
+                    const updatedOrders = [orderId, ...existingOrders]
+                    localStorage.setItem('myOrders', JSON.stringify(updatedOrders))
+                }
+            }
+
             // If Paymob payment is required
             if (data.paymentUrl) {
                 window.location.href = data.paymentUrl
                 return
             }
-
-            // Otherwise (Cash order)
-            const orderId = data._id || data.order?._id
-
-            // Persist order ID - Support Multiple Orders
-            const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]')
-            const updatedOrders = [orderId, ...existingOrders]
-            localStorage.setItem('myOrders', JSON.stringify(updatedOrders))
 
             router.push(`/order/${orderId}`)
         },
