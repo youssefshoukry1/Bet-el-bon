@@ -193,11 +193,11 @@ export default function CheckoutPage() {
                                     </button>
 
                                     <button
-                                        onClick={() => setPaymentMethod('wallet')}
-                                        className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${paymentMethod === 'wallet' ? 'border-gold-500 bg-gold-500/10 text-gold-400' : 'border-rich-black-700 hover:bg-rich-black-800 text-rich-black-400'}`}
+                                        onClick={() => setPaymentMethod('paymob')}
+                                        className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${paymentMethod === 'paymob' ? 'border-gold-500 bg-gold-500/10 text-gold-400' : 'border-rich-black-700 hover:bg-rich-black-800 text-rich-black-400'}`}
                                     >
                                         <Smartphone size={20} className="mb-1" />
-                                        <span className="font-bold text-sm">E-Wallet</span>
+                                        <span className="font-bold text-sm">Paymob</span>
                                     </button>
                                 </div>
                             </CardContent>
