@@ -44,15 +44,21 @@ export default function CheckoutPage() {
         onSuccess: (data) => {
             clearCart()
 
+            // If Paymob payment is required
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl
+                return
+            }
+
+            // Otherwise (Cash order)
+            const orderId = data._id || data.order?._id
+
             // Persist order ID - Support Multiple Orders
             const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]')
-            const updatedOrders = [data._id, ...existingOrders]
+            const updatedOrders = [orderId, ...existingOrders]
             localStorage.setItem('myOrders', JSON.stringify(updatedOrders))
 
-            // Also keep legacy 'activeOrderId' for direct redirect for now, but we will redirect to orders list usually
-            localStorage.setItem('activeOrderId', data._id)
-
-            router.push(`/order/${data._id}`)
+            router.push(`/order/${orderId}`)
         },
         onError: (error) => {
             alert('Failed to place order: ' + (error.response?.data?.message || error.message))

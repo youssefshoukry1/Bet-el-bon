@@ -46,7 +46,7 @@ function CashierContent() {
         // Cashier confirms => Status moves to 'paid' (which sends it to Kitchen)
         mutate({ id: orderId, status: 'paid', paymentStatus: 'paid' })
     }
-
+    
     // Filter ONLY 'waiting_for_cash'
     const cashOrders = orders.filter(o => o.status === 'waiting_for_cash')
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first

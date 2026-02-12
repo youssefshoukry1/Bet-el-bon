@@ -1,6 +1,5 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { Lock } from 'lucide-react'
 import api from '@/lib/api'
