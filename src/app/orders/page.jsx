@@ -59,6 +59,7 @@ export default function MyOrdersPage() {
         const success = searchParams.get('success')
 
         const verifyPayment = async () => {
+            // Case 1: Payment Success
             if (hmac && success === 'true') {
                 try {
                     console.log('🔄 Verifying Paymob payment via frontend redirect...')
@@ -79,6 +80,15 @@ export default function MyOrdersPage() {
                     // Still try to reload orders
                     loadOrders()
                 }
+            }
+            // Case 2: Payment Failed / Refused
+            else if (success === 'false') {
+                console.warn('❌ Payment was refused or failed.')
+                alert("Payment Failed! Please try again with a valid card or wallet.")
+
+                // Optional: Remove the failed order ID from localStorage so it doesn't try to load
+                // Or keep it but it won't show up because of the filter
+                router.replace('/orders') // Clean URL
             }
         }
 
