@@ -35,17 +35,26 @@ export default function MyOrdersPage() {
 
         try {
             // Fetch details for each ID
-            const requests = myOrderIds.map(id => axios.get(`${API_BASE_URL}/order/${id}`).catch(err => null))
-            const responses = await Promise.all(requests)
-            const validOrders = responses
-                .filter(r => r && r.data)
-                .map(r => r.data)
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
+            // Fetch details for each ID
+            const requests = myOrderIds.map(id => axios.get(`${API_BASE_URL}/order/${id}`)
+                .then(res => res.data)
+                .catch(err => {
+                    // Start of Selection
+                    if (err.response && err.response.status === 404) {
+                        console.warn(`Order ${id} not found (likely deleted or failed payment).`)
+                    }
+                    return null
+                })
+            )
 
-            setOrders(validOrders
+            const responses = await Promise.all(requests)
+
+            const validOrders = responses
+                .filter(order => order !== null)
                 .filter(order => order.status !== 'awaiting_payment') // 🔹 HIDE pending paymob orders
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
-            )
+
+            setOrders(validOrders)
         } catch (error) {
             console.error("Failed to load orders", error)
         } finally {
