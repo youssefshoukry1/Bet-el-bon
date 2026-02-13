@@ -2,62 +2,96 @@
 import Link from 'next/link'
 import { ArrowRight, Clock, Coffee, CheckCircle2, ChevronRight } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
-import { fetchOrders } from '@/lib/api' // We might need a specific 'fetchMyOrders' but for now fetching all is too much. 
-// Ideally we should have an endpoint `fetchOrderByIds` or `fetchMyOrders`.
-// For MVP, since we don't have auth, we can just fetch all or fetch individually. 
-// Fetching all is risky for data leak but easiest for now if number of orders is small.
-// A better approach is to fetch each ID individually using useQueries, but that is complex.
-// Let's assume for this small coffee shop, fetching the specific IDs one by one or a small bulk is okay.
-// Actually, `fetchOrders` returns ALL orders currently. That works for "Admins" but for users? 
-// The user has IDs in localStorage. We can filter the client side data if we are lazy, OR (better) call getOrderById multiple times.
-
+import { fetchOrders } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import axios from 'axios'
+import { useSearchParams, useRouter } from 'next/navigation'
+
+const API_BASE_URL = 'https://bet-el-bon-api.vercel.app/api'
 
 export default function MyOrdersPage() {
     const [myOrderIds, setMyOrderIds] = useState([])
     const [orders, setOrders] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
+    // Hooks for Paymob Redirect Handling
+    const searchParams = useSearchParams()
+    const router = useRouter()
+
     useEffect(() => {
         const stored = JSON.parse(localStorage.getItem('myOrders') || '[]')
         setMyOrderIds(stored)
     }, [])
 
+    // 🔹 Load Orders Function (Defined here to be utilized by multiple effects)
+    const loadOrders = async () => {
+        if (myOrderIds.length === 0) {
+            setIsLoading(false)
+            return
+        }
+
+        try {
+            // Fetch details for each ID
+            const requests = myOrderIds.map(id => axios.get(`${API_BASE_URL}/order/${id}`).catch(err => null))
+            const responses = await Promise.all(requests)
+            const validOrders = responses
+                .filter(r => r && r.data)
+                .map(r => r.data)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
+
+            setOrders(validOrders)
+        } catch (error) {
+            console.error("Failed to load orders", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    // 🔹 Paymob Verification Effect
     useEffect(() => {
-        const loadOrders = async () => {
-            if (myOrderIds.length === 0) {
-                setIsLoading(false)
-                return
-            }
+        const hmac = searchParams.get('hmac')
+        const success = searchParams.get('success')
 
-            try {
-                // Fetch details for each ID
-                // Note: In a real app, use a bulk fetch endpoint.
-                const requests = myOrderIds.map(id => axios.get(`https://bet-el-bon-api.vercel.app/api/order/${id}`).catch(err => null))
-                const responses = await Promise.all(requests)
-                const validOrders = responses
-                    .filter(r => r && r.data)
-                    .map(r => r.data)
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
+        const verifyPayment = async () => {
+            if (hmac && success === 'true') {
+                try {
+                    console.log('🔄 Verifying Paymob payment via frontend redirect...')
+                    const queryString = searchParams.toString()
 
-                setOrders(validOrders)
-            } catch (error) {
-                console.error("Failed to load orders", error)
-            } finally {
-                setIsLoading(false)
+                    // Call backend callback endpoint (GET) to process the result
+                    await axios.get(`${API_BASE_URL}/order/paymob-callback?${queryString}`)
+
+                    console.log('✅ Payment verified successfully!')
+
+                    // Clean URL
+                    router.replace('/orders')
+
+                    // Reload orders immediately
+                    loadOrders()
+                } catch (error) {
+                    console.error('❌ Failed to verify payment on redirect:', error)
+                    // Still try to reload orders
+                    loadOrders()
+                }
             }
         }
 
+        verifyPayment()
+    }, [searchParams]) // Verify when params change
+
+    // 🔹 Initial Load & Polling Effect
+    useEffect(() => {
         if (myOrderIds.length > 0) {
             loadOrders()
             const interval = setInterval(loadOrders, 5000) // Poll for updates
             return () => clearInterval(interval)
+        } else {
+            setIsLoading(false)
         }
-    }, [myOrderIds])
+    }, [myOrderIds]) // Re-run when IDs are loaded
 
     if (isLoading) return <div className="p-8 text-gold-400 text-center">Loading your orders...</div>
 
