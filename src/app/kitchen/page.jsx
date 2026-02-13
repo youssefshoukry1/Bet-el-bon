@@ -35,7 +35,7 @@ export default function KitchenPage() {
     const activeOrders = orders.filter(o =>
         o.status !== 'completed' &&
         o.status !== 'cancelled' &&
-        o.status !== 'awaiting_payment'
+        o.status !== 'awaiting_payment' // Double check
     )
 
     return (

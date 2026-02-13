@@ -42,7 +42,10 @@ export default function MyOrdersPage() {
                 .map(r => r.data)
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
 
-            setOrders(validOrders)
+            setOrders(validOrders
+                .filter(order => order.status !== 'awaiting_payment') // 🔹 HIDE pending paymob orders
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
+            )
         } catch (error) {
             console.error("Failed to load orders", error)
         } finally {
