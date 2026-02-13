@@ -32,7 +32,11 @@ export default function KitchenPage() {
 
     if (isLoading) return <div className="p-8 text-gold-400">Loading KDS...</div>
 
-    const activeOrders = orders.filter(o => o.status !== 'completed' && o.status !== 'cancelled')
+    const activeOrders = orders.filter(o =>
+        o.status !== 'completed' &&
+        o.status !== 'cancelled' &&
+        o.status !== 'awaiting_payment'
+    )
 
     return (
         <div className="min-h-screen bg-rich-black-950 p-6">
@@ -61,7 +65,7 @@ export default function KitchenPage() {
                         >
                             <Card className={`
                                 border-t-4 h-full flex flex-col
-                                ${order.status === 'pending' ? 'border-t-red-500' : ''}
+                                ${(order.status === 'pending' || order.status === 'paid') ? 'border-t-red-500' : ''}
                                 ${order.status === 'preparing' ? 'border-t-amber-500' : ''}
                                 ${order.status === 'ready' ? 'border-t-emerald-500' : ''}
                             `}>
@@ -74,10 +78,10 @@ export default function KitchenPage() {
                                             </div>
                                         </div>
                                         <Badge variant={
-                                            order.status === 'pending' ? 'warning' :
+                                            (order.status === 'pending' || order.status === 'paid') ? 'warning' :
                                                 order.status === 'preparing' ? 'secondary' : 'success'
                                         } className="uppercase tracking-wider">
-                                            {order.status}
+                                            {order.status === 'paid' ? 'PAID' : order.status}
                                         </Badge>
                                     </div>
                                     <div className="mt-2 text-sm text-gold-200 font-bold bg-rich-black-800 px-2 py-1 rounded w-fit">
@@ -103,7 +107,7 @@ export default function KitchenPage() {
                                 </CardContent>
 
                                 <div className="p-4 bg-rich-black-900 mt-auto border-t border-rich-black-800">
-                                    {order.status === 'pending' && (
+                                    {(order.status === 'pending' || order.status === 'paid') && (
                                         <Button
                                             onClick={() => handleStatusUpdate(order._id, 'preparing')}
                                             className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold"

@@ -83,8 +83,14 @@ export default function MyOrdersPage() {
                                     <div className="flex flex-col gap-1">
                                         <div className="flex items-center gap-2">
                                             <span className="font-bold text-gold-50 text-lg">Order #{order.orderNumber}</span>
-                                            <Badge variant={order.status === 'ready' ? 'success' : order.status === 'completed' ? 'outline' : 'warning'} className="text-xs uppercase">
-                                                {order.status}
+                                            <Badge variant={
+                                                order.status === 'ready' ? 'success' :
+                                                    order.status === 'paid' ? 'default' :
+                                                        order.status === 'completed' ? 'outline' : 'warning'
+                                            } className="text-xs uppercase">
+                                                {order.status === 'awaiting_payment' ? 'Waiting for Payment' :
+                                                    order.status === 'waiting_for_cash' ? 'Pay Cashier' :
+                                                        order.status}
                                             </Badge>
                                         </div>
                                         <span className="text-xs text-rich-black-400 flex items-center gap-1">
