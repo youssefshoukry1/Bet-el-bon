@@ -35,26 +35,44 @@ export default function MyOrdersPage() {
 
         try {
             // Fetch details for each ID
-            // Fetch details for each ID
             const requests = myOrderIds.map(id => axios.get(`${API_BASE_URL}/order/${id}`)
-                .then(res => res.data)
-                .catch(err => {
-                    // Start of Selection
-                    if (err.response && err.response.status === 404) {
-                        console.warn(`Order ${id} not found (likely deleted or failed payment).`)
-                    }
-                    return null
-                })
+                .then(res => ({ status: 'fulfilled', value: res.data, id }))
+                .catch(err => ({ status: 'rejected', reason: err, id }))
             )
 
-            const responses = await Promise.all(requests)
+            const results = await Promise.all(requests)
 
-            const validOrders = responses
-                .filter(order => order !== null)
+            // 1. Separate valid orders and dead IDs (404s)
+            const validOrders = []
+            const deadIds = []
+
+            results.forEach(result => {
+                if (result.status === 'fulfilled') {
+                    validOrders.push(result.value)
+                } else {
+                    const err = result.reason
+                    // If 404, it means the order caused by failed payment was deleted from DB
+                    if (err.response && err.response.status === 404) {
+                        deadIds.push(result.id)
+                    }
+                }
+            })
+
+            // 2. Clean up LocalStorage if we found dead IDs
+            if (deadIds.length > 0) {
+                console.warn(`Cleaning up ${deadIds.length} invalid/deleted orders from history.`)
+                const currentIds = JSON.parse(localStorage.getItem('myOrders') || '[]')
+                const updatedIds = currentIds.filter(id => !deadIds.includes(id))
+
+                localStorage.setItem('myOrders', JSON.stringify(updatedIds))
+                setMyOrderIds(updatedIds) // Update state to stop polling these
+            }
+
+            // 3. Update UI
+            setOrders(validOrders
                 .filter(order => order.status !== 'awaiting_payment') // 🔹 HIDE pending paymob orders
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
-
-            setOrders(validOrders)
+            )
         } catch (error) {
             console.error("Failed to load orders", error)
         } finally {
