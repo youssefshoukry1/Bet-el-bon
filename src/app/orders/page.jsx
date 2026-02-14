@@ -97,6 +97,20 @@ export default function MyOrdersPage() {
 
                     console.log('✅ Payment verified successfully!')
 
+                    // 🔹 NEW: Promote the pending order to "My Orders"
+                    // We only do this AFTER successful verification
+                    const pendingId = localStorage.getItem('pendingPaymobOrder')
+                    if (pendingId) {
+                        const currentIds = JSON.parse(localStorage.getItem('myOrders') || '[]')
+                        if (!currentIds.includes(pendingId)) {
+                            const updatedIds = [pendingId, ...currentIds]
+                            localStorage.setItem('myOrders', JSON.stringify(updatedIds))
+                            setMyOrderIds(updatedIds) // Update state
+                        }
+                        // Remove pending flag
+                        localStorage.removeItem('pendingPaymobOrder')
+                    }
+
                     // Clean URL
                     router.replace('/orders')
 
@@ -112,6 +126,9 @@ export default function MyOrdersPage() {
             else if (success === 'false') {
                 console.warn('❌ Payment was refused or failed.')
                 alert("Payment Failed! Please try again with a valid card or wallet.")
+
+                // 🔹 Clean up pending order since it failed
+                localStorage.removeItem('pendingPaymobOrder')
 
                 // Optional: Remove the failed order ID from localStorage so it doesn't try to load
                 // Or keep it but it won't show up because of the filter
