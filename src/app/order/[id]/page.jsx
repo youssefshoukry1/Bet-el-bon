@@ -2,7 +2,7 @@
 import { useParams } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/Card'
 import { motion } from 'framer-motion'
-import { Check, Clock, Coffee, ChefHat, Banknote, AlertCircle } from 'lucide-react'
+import { Check, Clock, Coffee, ChefHat, Banknote, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { fetchOrderById } from '@/lib/api'
 
@@ -71,6 +71,34 @@ export default function OrderStatusPage() {
                         ) : (
                             /* Normal Kitchen Stepper */
                             <>
+                                {/* 🔹 Payment Status Indicators for Paymob */}
+                                {order.paymentMethod === 'paymob' && (
+                                    <div className="mb-8">
+                                        {order.paymentStatus === 'paid' && (
+                                            <div className="bg-emerald-950/30 border border-emerald-500/30 text-emerald-400 p-4 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-emerald-900/10">
+                                                <div className="bg-emerald-500/20 p-2 rounded-full">
+                                                    <CheckCircle2 size={24} />
+                                                </div>
+                                                <div className="text-left">
+                                                    <h3 className="font-bold text-lg leading-tight">Payment Successful</h3>
+                                                    <p className="text-xs text-emerald-300/80">Electronic payment confirmed</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {order.paymentStatus === 'unpaid' && currentStatus === 'awaiting_payment' && (
+                                            <div className="bg-amber-950/30 border border-amber-500/30 text-amber-500 p-4 rounded-xl flex items-center justify-center gap-3">
+                                                <AlertCircle size={24} />
+                                                <h3 className="font-bold text-lg">Payment Processing...</h3>
+                                            </div>
+                                        )}
+                                        {order.paymentStatus === 'failed' && (
+                                            <div className="bg-red-950/30 border border-red-500/30 text-red-500 p-4 rounded-xl flex items-center justify-center gap-3">
+                                                <AlertCircle size={24} />
+                                                <h3 className="font-bold text-lg">Payment Failed</h3>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                                 <div className="relative flex justify-between items-center mb-12 px-4">
                                     {/* Connecting Line */}
                                     <div className="absolute top-1/2 left-0 w-full h-1 bg-rich-black-800 -z-10 -translate-y-1/2" />
