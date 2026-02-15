@@ -46,15 +46,6 @@ export default function CheckoutPage() {
 
             const orderId = data._id || data.order?._id
 
-            // If Paymob payment is required
-            if (data.paymentUrl) {
-                // Save to temporary storage for verification later
-                localStorage.setItem('pendingPaymobOrder', orderId)
-                window.location.href = data.paymentUrl
-                return
-            }
-
-            // For Cash / Non-redirect orders: Persist immediately
             if (orderId) {
                 const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]')
                 // Avoid duplicates
@@ -64,6 +55,15 @@ export default function CheckoutPage() {
                 }
             }
 
+            // If Paymob payment is required
+            if (data.paymentUrl) {
+                // Save to temporary storage for verification later (optional secondary check)
+                localStorage.setItem('pendingPaymobOrder', orderId)
+                window.location.href = data.paymentUrl
+                return
+            }
+
+            // For Cash / Non-redirect orders
             router.push(`/order/${orderId}`)
         },
         onError: (error) => {
