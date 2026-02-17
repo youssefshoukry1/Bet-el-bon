@@ -5,6 +5,7 @@ import { ProductCard } from '@/components/features/ProductCard'
 import { ProductModal } from '@/components/features/ProductModal'
 import { useQuery } from '@tanstack/react-query'
 import { fetchDrinks } from '@/lib/api'
+import Image from "next/image";
 
 const CATEGORIES = [
   { id: 'all', label: 'All Menu' },
@@ -47,25 +48,20 @@ export default function Home() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <section className="relative text-center py-20 overflow-hidden rounded-3xl -mx-4 md:mx-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-rich-black-900 via-rich-black-800 to-gold-900/20 z-0" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 z-0" />
+      <section className="relative text-center  overflow-hidden rounded-3xl -mx-4 md:mx-0 flex items-center justify-center">
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-10 px-4"
+          className="relative z-10 px-4 w-90 h-100 lg:w-120  bg-rich-black-950"
         >
-          <span className="inline-block py-1 px-3 rounded-full bg-gold-500/10 text-gold-400 text-xs tracking-[0.2em] font-bold uppercase mb-4 border border-gold-500/20 backdrop-blur-sm">
-            Est. 1919
-          </span>
-          <h1 className="text-5xl md:text-8xl font-amiri font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold-100 to-gold-400 mb-6 drop-shadow-sm">
-            Bayt Al-Bunn
-          </h1>
-          <p className="text-rich-black-300 max-w-lg mx-auto text-lg/relaxed md:text-xl/relaxed font-light">
-            Brewing legacy in every cup. Experience the authentic taste of tradition.
-          </p>
+          <Image
+            src="https://res.cloudinary.com/djkxs77gs/image/upload/v1771287697/%D8%A8%D9%8A%D8%AA-%D8%A7%D9%84%D8%A8%D9%86_uts77v.jpg"
+            alt="My Photo"
+            fill
+            sizes="(max-width: 768px) 160px, (max-width: 1200px) 256px, 320px"
+          />
         </motion.div>
       </section>
 
