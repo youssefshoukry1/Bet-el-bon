@@ -4,15 +4,11 @@ import { Card, CardContent } from '@/components/ui/Card'
 import { motion } from 'framer-motion'
 import { Check, Clock, Coffee, ChefHat, Banknote, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
+import { useLanguage } from '@/context/LanguageContext'
 import { fetchOrderById } from '@/lib/api'
 
-// Define KITCHEN_STEPS outside component to avoid recreation
-const KITCHEN_STEPS = [
-    { id: 'pending', label: 'Order Placed', icon: Clock },
-    { id: 'ready', label: 'Ready to Serve', icon: Coffee },
-]
-
 export default function OrderStatusPage() {
+    const { t } = useLanguage()
     const { id } = useParams()
 
     const { data: order, isLoading } = useQuery({
@@ -23,7 +19,13 @@ export default function OrderStatusPage() {
     })
 
     // If loading or not found yet
-    if (isLoading || !order) return <div className="min-h-screen text-center pt-20 text-gold-400">Loading Order...</div>
+    if (isLoading || !order) return <div className="min-h-screen text-center pt-20 text-gold-400">{t('orderStatus.loading')}</div>
+
+    // Define KITCHEN_STEPS inside component to use i18n
+    const KITCHEN_STEPS = [
+        { id: 'pending', labelKey: 'orderStatus.orderPlaced', icon: Clock },
+        { id: 'ready', labelKey: 'orderStatus.readyToServe', icon: Coffee },
+    ]
 
     const currentStatus = order.status || 'pending'
 
@@ -42,9 +44,9 @@ export default function OrderStatusPage() {
                 animate={{ scale: 1, opacity: 1 }}
             >
                 <div className="mb-8">
-                    <h1 className="text-3xl md:text-5xl font-amiri font-bold text-gold-100 mb-2">Order #{order.orderNumber}</h1>
+                    <h1 className="text-3xl md:text-5xl font-amiri font-bold text-gold-100 mb-2">{t('orders.orderNumber', { number: order.orderNumber })}</h1>
                     <p className="text-rich-black-300">
-                        {isWaitingForCash ? "Action Required" : "Thank you for ordering from Bayt Al-Bunn"}
+                        {isWaitingForCash ? t('orderStatus.actionRequired') : t('orderStatus.thankYou')}
                     </p>
                 </div>
 
@@ -57,12 +59,12 @@ export default function OrderStatusPage() {
                                 <div className="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mb-6 text-amber-500">
                                     <Banknote size={48} strokeWidth={1.5} />
                                 </div>
-                                <h2 className="text-2xl font-bold text-amber-500 mb-2">Payment Required</h2>
+                                <h2 className="text-2xl font-bold text-amber-500 mb-2">{t('orderStatus.paymentRequired')}</h2>
                                 <p className="text-rich-black-300 mb-6 max-w-xs mx-auto">
-                                    Please proceed to <strong>Cash Point</strong> to confirm your payment of <span className="text-white font-bold">{order.totalPrice} EGP</span>.
+                                    {t('orderStatus.proceedCashPoint')} <strong>{order.totalPrice} EGP</strong>.
                                 </p>
                                 <div className="bg-rich-black-950 px-6 py-3 rounded-lg border border-rich-black-800">
-                                    <span className="text-sm text-rich-black-400 uppercase tracking-widest">Your Number</span>
+                                    <span className="text-sm text-rich-black-400 uppercase tracking-widest">{t('orderStatus.yourNumber')}</span>
                                     <div className="text-4xl font-mono font-bold text-white mt-1">{order.orderNumber}</div>
                                 </div>
                             </div>
@@ -77,22 +79,22 @@ export default function OrderStatusPage() {
                                                 <div className="bg-emerald-500/20 p-2 rounded-full">
                                                     <CheckCircle2 size={24} />
                                                 </div>
-                                                <div className="text-left">
-                                                    <h3 className="font-bold text-lg leading-tight">Payment Successful</h3>
-                                                    <p className="text-xs text-emerald-300/80">Electronic payment confirmed</p>
+                                                <div className="text-left gap-2 flex flex-col">
+                                                    <h3 className="font-bold text-lg leading-tight">{t('orderStatus.paymentSuccessful')}</h3>
+                                                    <p className="text-xs text-emerald-300/80">{t('orderStatus.electronicPaymentConfirmed')}</p>
                                                 </div>
                                             </div>
                                         )}
                                         {order.paymentStatus === 'unpaid' && currentStatus === 'awaiting_payment' && (
                                             <div className="bg-amber-950/30 border border-amber-500/30 text-amber-500 p-4 rounded-xl flex items-center justify-center gap-3">
                                                 <AlertCircle size={24} />
-                                                <h3 className="font-bold text-lg">Payment Processing...</h3>
+                                                <h3 className="font-bold text-lg">{t('orderStatus.paymentProcessing')}</h3>
                                             </div>
                                         )}
                                         {order.paymentStatus === 'failed' && (
                                             <div className="bg-red-950/30 border border-red-500/30 text-red-500 p-4 rounded-xl flex items-center justify-center gap-3">
                                                 <AlertCircle size={24} />
-                                                <h3 className="font-bold text-lg">Payment Failed</h3>
+                                                <h3 className="font-bold text-lg">{t('orderStatus.paymentFailed')}</h3>
                                             </div>
                                         )}
                                     </div>
@@ -120,7 +122,7 @@ export default function OrderStatusPage() {
                                                     <Icon size={index === activeStepIndex ? 24 : 18} />
                                                 </div>
                                                 <span className={`text-[10px] md:text-xs font-bold transition-colors absolute -bottom-6 w-24 ${isCompleted ? 'text-gold-200' : 'text-rich-black-600'}`}>
-                                                    {step.label}
+                                                    {t(step.labelKey)}
                                                 </span>
                                             </div>
                                         )
@@ -130,14 +132,14 @@ export default function OrderStatusPage() {
                                 <div className="bg-rich-black-950/50 rounded-xl p-6 border border-rich-black-800/50 mt-8">
                                     {(currentStatus === 'pending' || currentStatus === 'paid') && (
                                         <p className="text-gold-200 animate-pulse flex items-center justify-center gap-2">
-                                            <Clock size={18} /> Waiting for kitchen...
+                                            <Clock size={18} /> {t('orderStatus.waitingForKitchen')}
                                         </p>
                                     )}
                                     {currentStatus === 'ready' && (
                                         <div className="text-emerald-400 flex flex-col items-center">
                                             <Check size={48} className="mb-2" />
-                                            <h3 className="text-xl font-bold">Order Ready!</h3>
-                                            <p className="text-sm opacity-80">Please pick it up from the counter.</p>
+                                            <h3 className="text-xl font-bold">{t('orderStatus.orderReady')}</h3>
+                                            <p className="text-sm opacity-80">{t('orderStatus.pickupCounter')}</p>
                                         </div>
                                     )}
                                 </div>

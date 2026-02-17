@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { useCart } from '@/context/CartContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { Coffee, Check, Flame } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 
 export function ProductModal({ product, isOpen, onClose }) {
     const { addToCart } = useCart()
+    const { t } = useLanguage()
     const [size, setSize] = useState(null)
     const [customizations, setCustomizations] = useState({
         sugar: 'no_sugar',
@@ -42,11 +44,20 @@ export function ProductModal({ product, isOpen, onClose }) {
     }
 
     const sugarOptions = [
-        { id: 'no_sugar', label: 'No Sugar' },
-        { id: '1_shot', label: '1 Shot' },
-        { id: '2_shots', label: '2 Shots' },
-        { id: '3_shots', label: '3 Shots' }
+        { id: 'no_sugar', labelKey: 'product.noSugar' },
+        { id: '1_shot', labelKey: 'product.1Shot' },
+        { id: '2_shots', labelKey: 'product.2Shots' },
+        { id: '3_shots', labelKey: 'product.3Shots' }
     ]
+
+    const getSizeLabel = (sizeId) => {
+        const sizeMap = {
+            'small': 'product.small',
+            'medium': 'product.medium',
+            'large': 'product.large'
+        }
+        return t(sizeMap[sizeId] || sizeId)
+    }
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={product.title}>
@@ -62,9 +73,8 @@ export function ProductModal({ product, isOpen, onClose }) {
                 </div>
 
                 {/* Size Selection */}
-                {/* Size Selection */}
                 <div>
-                    <label className="block text-sm font-medium text-rich-black-300 mb-3 tracking-wide uppercase text-xs">Size</label>
+                    <label className="block text-sm font-medium text-rich-black-300 mb-3 tracking-wide uppercase text-xs">{t('product.size')}</label>
                     <div className="grid grid-cols-3 gap-3">
                         {product.sizes.map((s) => (
                             <button
@@ -80,7 +90,7 @@ export function ProductModal({ product, isOpen, onClose }) {
                                 <Coffee size={size === 'small' ? 20 : size === 'medium' ? 24 : 28}
                                     className={cn("mb-2 transition-transform duration-300", size === s.size && "scale-110 text-gold-400")}
                                 />
-                                <span className="capitalize font-bold text-sm">{s.size}</span>
+                                <span className="capitalize font-bold text-sm">{getSizeLabel(s.size)}</span>
                                 <span className="text-xs mt-1 opacity-70 group-hover:opacity-100 transition-opacity">{s.price} EGP</span>
 
                                 {size === s.size && (
@@ -96,7 +106,7 @@ export function ProductModal({ product, isOpen, onClose }) {
 
                 {/* Customizations */}
                 <div>
-                    <label className="block text-sm font-medium text-rich-black-300 mb-3 tracking-wide uppercase text-xs">Customizations</label>
+                    <label className="block text-sm font-medium text-rich-black-300 mb-3 tracking-wide uppercase text-xs">{t('product.customizations')}</label>
                     <div className="space-y-4">
                         {/* Spiced Option */}
                         {product.options?.spiced && (
@@ -114,8 +124,8 @@ export function ProductModal({ product, isOpen, onClose }) {
                                         <Flame size={20} />
                                     </div>
                                     <div>
-                                        <span className={cn("block font-bold", customizations.spiced ? "text-amber-100" : "text-rich-black-300")}>Spiced (Mahweja)</span>
-                                        <span className="text-xs text-rich-black-500">Add traditional spices</span>
+                                        <span className={cn("block font-bold", customizations.spiced ? "text-amber-100" : "text-rich-black-300")}>{t('product.spiced')}</span>
+                                        <span className="text-xs text-rich-black-500">{t('product.spicedDesc')}</span>
                                     </div>
                                 </div>
                                 <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
@@ -129,7 +139,7 @@ export function ProductModal({ product, isOpen, onClose }) {
                         {/* Sugar Options */}
                         {product.options?.sugar && (
                             <div className="space-y-3">
-                                <span className="text-xs uppercase text-rich-black-400 font-bold tracking-wider">Sugar Level</span>
+                                <span className="text-xs uppercase text-rich-black-400 font-bold tracking-wider">{t('product.sugarLevel')}</span>
                                 <div className="grid grid-cols-4 gap-2">
                                     {sugarOptions.map(opt => (
                                         <button
@@ -143,7 +153,7 @@ export function ProductModal({ product, isOpen, onClose }) {
                                             )}
                                         >
                                             {customizations.sugar === opt.id && <Check size={12} className="mb-0.5" />}
-                                            {opt.label}
+                                            {t(opt.labelKey)}
                                         </button>
                                     ))}
                                 </div>
@@ -155,11 +165,11 @@ export function ProductModal({ product, isOpen, onClose }) {
                 {/* Footer Actions */}
                 <div className="pt-4 mt-6 border-t border-rich-black-800 flex items-center justify-between gap-4">
                     <div className="flex flex-col">
-                        <span className="text-xs text-rich-black-400">Total Price</span>
+                        <span className="text-xs text-rich-black-400">{t('product.total')}</span>
                         <span className="text-2xl font-bold text-gold-400 font-amiri">{currentPrice} EGP</span>
                     </div>
                     <Button onClick={handleAddToCart} size="lg" className="flex-1 font-bold">
-                        Add to Cart
+                        {t('product.addToCart')}
                     </Button>
                 </div>
             </div>

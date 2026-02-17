@@ -4,18 +4,20 @@ import { motion } from 'framer-motion'
 import { ProductCard } from '@/components/features/ProductCard'
 import { ProductModal } from '@/components/features/ProductModal'
 import { useQuery } from '@tanstack/react-query'
+import { useLanguage } from '@/context/LanguageContext'
 import { fetchDrinks } from '@/lib/api'
 import Image from "next/image";
 
 const CATEGORIES = [
-  { id: 'all', label: 'All Menu' },
-  { id: 'coffee', label: 'Coffee' },
-  { id: 'espresso', label: 'Espresso' },
-  { id: 'cappuccino', label: 'Cappuccino' },
-  { id: 'tea', label: 'Tea' },
+  { id: 'all', labelKey: 'category.all' },
+  { id: 'coffee', labelKey: 'category.coffee' },
+  { id: 'espresso', labelKey: 'category.espresso' },
+  { id: 'cappuccino', labelKey: 'category.cappuccino' },
+  { id: 'tea', labelKey: 'category.tea' },
 ]
 
 export default function Home() {
+  const { t } = useLanguage()
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -40,7 +42,7 @@ export default function Home() {
   if (error) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center text-red-500">
-        Failed to load menu. Please try again later.
+        {t('error.failedLoadMenu')}
       </div>
     )
   }
@@ -58,7 +60,7 @@ export default function Home() {
         >
           <Image
             src="https://res.cloudinary.com/djkxs77gs/image/upload/v1771287697/%D8%A8%D9%8A%D8%AA-%D8%A7%D9%84%D8%A8%D9%86_uts77v.jpg"
-            alt="My Photo"
+            alt="Bayt Al-Bunn"
             fill
             sizes="(max-width: 768px) 160px, (max-width: 1200px) 256px, 320px"
           />
@@ -79,7 +81,7 @@ export default function Home() {
                   : 'bg-rich-black-900/50 text-rich-black-400 border-rich-black-700 hover:border-gold-500/50 hover:text-gold-200'}
               `}
             >
-              {cat.label}
+              {t(cat.labelKey)}
             </button>
           ))}
         </div>
@@ -89,7 +91,7 @@ export default function Home() {
       <section className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 min-h-[400px]">
         {filteredProducts.length === 0 ? (
           <div className="col-span-full text-center text-rich-black-400 py-12">
-            No items found in this category.
+            {t('product.noItems')}
           </div>
         ) : (
           filteredProducts.map(product => (

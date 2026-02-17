@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Clock, Coffee, CheckCircle2, ChevronRight } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { fetchOrders } from '@/lib/api'
+import { useLanguage } from '@/context/LanguageContext'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
@@ -13,6 +14,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 const API_BASE_URL = 'https://bet-el-bon-api.vercel.app/api'
 
 export default function MyOrdersPage() {
+    const { t } = useLanguage()
     const [myOrderIds, setMyOrderIds] = useState([])
     const [orders, setOrders] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -73,7 +75,7 @@ export default function MyOrdersPage() {
             setOrders(validOrders
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
             )
-            console.error("Failed to load orders", error)
+            console.error(t('error.failedLoadOrders'))
         } finally {
             setIsLoading(false)
         }
@@ -98,45 +100,38 @@ export default function MyOrdersPage() {
 
                     // 🔹 NEW: Promote the pending order to "My Orders"
                     // We only do this AFTER successful verification
-                    const pendingId = localStorage.getItem('pendingPaymobOrder')
-                    if (pendingId) {
-                        const currentIds = JSON.parse(localStorage.getItem('myOrders') || '[]')
-                        if (!currentIds.includes(pendingId)) {
-                            const updatedIds = [pendingId, ...currentIds]
-                            localStorage.setItem('myOrders', JSON.stringify(updatedIds))
-                            setMyOrderIds(updatedIds) // Update state
+                    const pendingOrderId = localStorage.getItem('pendingPaymobOrder')
+                    if (pendingOrderId) {
+                        const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]')
+                        if (!existingOrders.includes(pendingOrderId)) {
+                            existingOrders.unshift(pendingOrderId)
+                            localStorage.setItem('myOrders', JSON.stringify(existingOrders))
+                            setMyOrderIds(existingOrders) // Update state to trigger loadOrders
                         }
-                        // Remove pending flag
                         localStorage.removeItem('pendingPaymobOrder')
                     }
 
-                    // Clean URL
-                    router.replace('/orders')
-
-                    // Reload orders immediately
-                    loadOrders()
-                } catch (error) {
-                    console.error('❌ Failed to verify payment on redirect:', error)
-                    // Still try to reload orders
-                    loadOrders()
+                    // Clean URL by removing paymob params
+                    window.history.replaceState({}, document.title, window.location.pathname)
+                } catch (err) {
+                    console.error('❌ Payment verification failed:', err)
+                    // Even if verification fails, the order might exist
+                    const pendingOrderId = localStorage.getItem('pendingPaymobOrder')
+                    if (pendingOrderId) {
+                        localStorage.removeItem('pendingPaymobOrder')
+                    }
                 }
             }
-            // Case 2: Payment Failed / Refused
-            else if (success === 'false') {
-                console.warn('❌ Payment was refused or failed.')
-                alert("Payment Failed! Please try again with a valid card or wallet.")
-
-                // 🔹 Clean up pending order since it failed
+            // Case 2: Payment Cancelled or Failed
+            else if (hmac && success === 'false') {
+                console.warn('⚠️ Payment cancelled by user or failed')
                 localStorage.removeItem('pendingPaymobOrder')
-
-                // Optional: Remove the failed order ID from localStorage so it doesn't try to load
-                // Or keep it but it won't show up because of the filter
-                router.replace('/orders') // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname)
             }
         }
 
         verifyPayment()
-    }, [searchParams]) // Verify when params change
+    }, [searchParams])
 
     // 🔹 Initial Load & Polling Effect
     useEffect(() => {
@@ -149,19 +144,32 @@ export default function MyOrdersPage() {
         }
     }, [myOrderIds]) // Re-run when IDs are loaded
 
-    if (isLoading) return <div className="p-8 text-gold-400 text-center">Loading your orders...</div>
+    if (isLoading) return <div className="p-8 text-gold-400 text-center">{t('term.loading')}</div>
+
+    const getStatusLabel = (status) => {
+        const statusMap = {
+            'awaiting_payment': 'awaiting_payment',
+            'waiting_for_cash': 'waiting_for_cash',
+            'pending': 'status.pending',
+            'paid': 'status.paid',
+            'preparing': 'status.preparing',
+            'ready': 'status.ready',
+            'completed': 'status.completed',
+        }
+        return t(statusMap[status] || status)
+    }
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-2xl min-h-[60vh]">
             <h1 className="text-3xl font-amiri font-bold text-gold-100 mb-8 flex items-center gap-3">
-                <Coffee /> My Orders
+                <Coffee /> {t('orders.title')}
             </h1>
 
             {orders.length === 0 ? (
                 <div className="text-center text-rich-black-400 py-12 bg-rich-black-900 rounded-xl border border-rich-black-800">
-                    <p className="mb-4">You haven't placed any orders yet.</p>
+                    <p className="mb-4">{t('orders.noOrders')}</p>
                     <Link href="/">
-                        <Button>Browse Menu</Button>
+                        <Button>{t('link.browseMenu')}</Button>
                     </Link>
                 </div>
             ) : (
@@ -172,22 +180,20 @@ export default function MyOrdersPage() {
                                 <CardContent className="p-4 flex items-center justify-between">
                                     <div className="flex flex-col gap-1">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-bold text-gold-50 text-lg">Order #{order.orderNumber}</span>
+                                            <span className="font-bold text-gold-50 text-lg">{t('orders.orderNumber', { number: order.orderNumber })}</span>
                                             <Badge variant={
                                                 order.status === 'ready' ? 'success' :
                                                     order.status === 'paid' ? 'default' :
                                                         order.status === 'completed' ? 'outline' : 'warning'
                                             } className="text-xs uppercase">
-                                                {order.status === 'awaiting_payment' ? 'Waiting for Payment' :
-                                                    order.status === 'waiting_for_cash' ? 'Pay Cashier' :
-                                                        order.status}
+                                                {getStatusLabel(order.status)}
                                             </Badge>
                                         </div>
                                         <span className="text-xs text-rich-black-400 flex items-center gap-1">
                                             <Clock size={12} /> {new Date(order.createdAt).toLocaleString()}
                                         </span>
                                         <div className="text-sm text-rich-black-300 mt-1">
-                                            {order.items.length} items • {order.totalPrice} EGP
+                                            {t('orders.items', { count: order.items.length })} • {order.totalPrice} EGP
                                         </div>
                                     </div>
                                     <ChevronRight className="text-rich-black-600 group-hover:text-gold-400 transition-colors" />

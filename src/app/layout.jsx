@@ -4,6 +4,7 @@ import Navbar from "./Navbar/Navbar";
 import Footer from "./Footer/Footer";
 import { CartProvider } from "@/context/CartContext";
 import { CartSidebar } from "@/components/features/CartSidebar";
+import { LanguageProvider } from "@/context/LanguageContext";
 import QueryProvider from "@/providers/QueryProvider";
 
 // Configure Inter (Main UI Font)
@@ -30,16 +31,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${amiri.variable}`}>
       <body className="antialiased min-h-screen flex flex-col">
-        <QueryProvider>
-          <CartProvider>
-            <Navbar />
-            <main className="flex-grow container mx-auto px-4 py-8">
-              {children}
-            </main>
-            <CartSidebar />
-            <Footer />
-          </CartProvider>
-        </QueryProvider>
+        <LanguageProvider>
+          <QueryProvider>
+            <CartProvider>
+              <Navbar />
+              <main className="flex-grow container mx-auto px-4 py-8">
+                {children}
+              </main>
+              <CartSidebar />
+              <Footer />
+            </CartProvider>
+          </QueryProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

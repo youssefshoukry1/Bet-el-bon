@@ -3,8 +3,10 @@ import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { useLanguage } from '@/context/LanguageContext'
 
 export function ProductCard({ product, onSelect }) {
+    const { t } = useLanguage()
     // Get base price (usually the smallest size)
     const basePrice = product.sizes?.[0]?.price || 0
 
@@ -37,7 +39,7 @@ export function ProductCard({ product, onSelect }) {
                     <p className="text-sm text-rich-black-300 line-clamp-2 mb-3">{product.description}</p>
                     <div className="flex items-center justify-between">
                         <span className="font-sans font-bold text-gold-400 text-lg">
-                            {basePrice} EGP
+                            {basePrice} {t('term.price').split(' ')[1] || 'EGP'}
                         </span>
                         <span className="text-xs uppercase tracking-wider text-rich-black-500 font-semibold border border-rich-black-700 px-2 py-1 rounded">
                             {product.coffeeType}

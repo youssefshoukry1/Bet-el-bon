@@ -40,7 +40,7 @@
     "src/app/Footer/Footer.jsx",
     "src/app/page.jsx",
     ".next/dev/types/**/*.ts"
-  ],
+, "src/components/i18n/translations.js"  ],
   "exclude": [
     "node_modules"
   ]

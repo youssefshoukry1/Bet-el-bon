@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react'
 import { useCart } from '@/context/CartContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { useRouter } from 'next/navigation'
@@ -14,6 +15,7 @@ import { Building2 } from 'lucide-react'
 
 export default function CheckoutPage() {
     const { items, total, clearCart } = useCart()
+    const { t } = useLanguage()
     const router = useRouter()
     const [tableNumber, setTableNumber] = useState('')
     const [paymentMethod, setPaymentMethod] = useState('cash')
@@ -67,16 +69,16 @@ export default function CheckoutPage() {
             router.push(`/order/${orderId}`)
         },
         onError: (error) => {
-            alert('Failed to place order: ' + (error.response?.data?.message || error.message))
+            alert(t('error.failedPlaceOrder', { error: error.response?.data?.message || error.message }))
         }
     })
 
     if (items.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-                <h2 className="text-2xl font-amiri text-gold-400 mb-4">Your cart is empty</h2>
+                <h2 className="text-2xl font-amiri text-gold-400 mb-4">{t('checkout.cartEmpty')}</h2>
                 <Link href="/">
-                    <Button>Browse Menu</Button>
+                    <Button>{t('link.browseMenu')}</Button>
                 </Link>
             </div>
         )
@@ -107,14 +109,14 @@ export default function CheckoutPage() {
     return (
         <div className="max-w-6xl mx-auto space-y-6">
             <Link href="/" className="inline-flex items-center text-gold-400 hover:text-gold-300 mb-4">
-                <ArrowLeft size={16} className="mr-2" /> Back to Menu
+                <ArrowLeft size={16} className="mr-2" /> {t('link.backToMenu')}
             </Link>
 
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <h1 className="text-4xl font-amiri font-bold text-gold-100 mb-8">Checkout</h1>
+                <h1 className="text-4xl font-amiri font-bold text-gold-100 mb-8">{t('checkout.title')}</h1>
 
                 <div className="grid lg:grid-cols-3 gap-8 items-start">
                     {/* Left Column - Details */}
@@ -122,7 +124,7 @@ export default function CheckoutPage() {
                         {/* Order Summary */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Order Summary</CardTitle>
+                                <CardTitle>{t('checkout.orderSummary')}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 {items.map(item => (
@@ -135,7 +137,7 @@ export default function CheckoutPage() {
                                     </div>
                                 ))}
                                 <div className="pt-4 flex justify-between items-center text-xl font-bold text-gold-400 border-t border-rich-black-700">
-                                    <span>Total</span>
+                                    <span>{t('checkout.total')}</span>
                                     <span>{total} EGP</span>
                                 </div>
                             </CardContent>
@@ -144,10 +146,10 @@ export default function CheckoutPage() {
                         {/* Special Notes */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Special Request</CardTitle>
+                                <CardTitle>{t('checkout.specialRequest')}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <label className="block text-sm font-medium text-rich-black-300 mb-2">Add a note for the kitchen</label>
+                                <label className="block text-sm font-medium text-rich-black-300 mb-2">{t('checkout.notes')}</label>
                                 <textarea
                                     className="w-full bg-rich-black-950 border border-rich-black-700 rounded-lg p-3 text-gold-100 focus:outline-none focus:border-gold-500 transition-colors h-24 resize-none"
                                     placeholder="Allergies, extra ice, etc..."
@@ -163,9 +165,9 @@ export default function CheckoutPage() {
                         {/* Branch Selection */}
                         <Card>
                             <CardHeader className="flex flex-row justify-between items-center pb-2">
-                                <CardTitle className="text-base">Pick-up Location</CardTitle>
+                                <CardTitle className="text-base">{t('checkout.branch')}</CardTitle>
                                 <Button variant="ghost" size="sm" onClick={() => setIsInstModalOpen(true)} className="text-gold-400 h-auto p-0 hover:bg-transparent">
-                                    Change
+                                    {t('btn.edit')}
                                 </Button>
                             </CardHeader>
                             <CardContent>
@@ -178,7 +180,7 @@ export default function CheckoutPage() {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="text-red-400 text-sm">Please select a branch</div>
+                                    <div className="text-red-400 text-sm">{t('checkout.selectBranch')}</div>
                                 )}
                             </CardContent>
                         </Card>
@@ -186,7 +188,7 @@ export default function CheckoutPage() {
                         {/* Payment Method */}
                         <Card>
                             <CardHeader>
-                                <CardTitle className="text-base">Payment Method</CardTitle>
+                                <CardTitle className="text-base">{t('checkout.paymentMethod')}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="grid grid-cols-2 gap-2">
@@ -195,7 +197,7 @@ export default function CheckoutPage() {
                                         className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${paymentMethod === 'cash' ? 'border-gold-500 bg-gold-500/10 text-gold-400' : 'border-rich-black-700 hover:bg-rich-black-800 text-rich-black-400'}`}
                                     >
                                         <Banknote size={20} className="mb-1" />
-                                        <span className="font-bold text-sm">Cash</span>
+                                        <span className="font-bold text-sm">{t('checkout.cash')}</span>
                                     </button>
 
                                     <button
@@ -203,7 +205,7 @@ export default function CheckoutPage() {
                                         className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${paymentMethod === 'paymob' ? 'border-gold-500 bg-gold-500/10 text-gold-400' : 'border-rich-black-700 hover:bg-rich-black-800 text-rich-black-400'}`}
                                     >
                                         <Smartphone size={20} className="mb-1" />
-                                        <span className="font-bold text-sm">Paymob</span>
+                                        <span className="font-bold text-sm">{t('checkout.paymob')}</span>
                                     </button>
                                 </div>
                             </CardContent>
@@ -215,7 +217,7 @@ export default function CheckoutPage() {
                             className="w-full text-xl font-amiri font-bold h-16 shadow-xl shadow-gold-500/20 animate-pulse hover:animate-none"
                             isLoading={isPending}
                         >
-                            Place Order
+                            {t('checkout.placeOrder')}
                         </Button>
                     </div>
                 </div>
