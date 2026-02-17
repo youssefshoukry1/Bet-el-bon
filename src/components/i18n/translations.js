@@ -4,6 +4,7 @@ export const translations = {
     // Navigation & Header
     "nav.menu": "Menu",
     "nav.myOrders": "My Orders",
+    "nav.language": "Language",
     "nav.langEn": "English",
     "nav.langAr": "العربية",
 
@@ -214,6 +215,7 @@ export const translations = {
     // Navigation & Header
     "nav.menu": "القائمة",
     "nav.myOrders": "طلباتي",
+    "nav.language": "اللغة",
     "nav.langEn": "English",
     "nav.langAr": "العربية",
 

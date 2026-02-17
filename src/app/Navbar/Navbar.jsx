@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
-import { ShoppingBag, Globe } from 'lucide-react'
+import { ShoppingBag, Globe, Menu, X } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { motion } from 'framer-motion'
@@ -15,6 +15,7 @@ export default function Navbar() {
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0)
   const [hasOrders, setHasOrders] = React.useState(false)
   const [isLangOpen, setIsLangOpen] = React.useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
 
   React.useEffect(() => {
     // Check for active orders list
@@ -30,7 +31,7 @@ export default function Navbar() {
           <h1 className="font-amiri text-2xl font-bold text-gold-400">بيت البن</h1>
         </Link>
 
-        <div className='flex items-center gap-6'>
+        <div className='hidden md:flex items-center gap-6'>
           <Link href="/" className={cn("nav-link", pathname === '/' && "active-link")}>{t('nav.menu')}</Link>
           {hasOrders && (
             <Link href="/orders" className={cn("nav-link", pathname.startsWith('/order') && "active-link")}>
@@ -105,7 +106,105 @@ export default function Navbar() {
             )}
           </button>
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="relative p-2 text-gold-400 hover:bg-rich-black-800 rounded-full transition-colors"
+            title={t('cart.title')}
+          >
+            <ShoppingBag size={20} />
+            {itemCount > 0 && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                key={itemCount}
+                className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full text-xs"
+              >
+                {itemCount}
+              </motion.span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 text-gold-400 hover:bg-rich-black-800 rounded-full transition-colors"
+            title="Menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="md:hidden bg-rich-black-900 border-t border-rich-black-800"
+        >
+          <div className="container mx-auto px-4 py-4 space-y-3">
+            {/* Home Link */}
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-2 text-gold-400 hover:bg-rich-black-800 rounded-lg transition-colors"
+            >
+              {t('nav.menu')}
+            </Link>
+
+            {/* My Orders Link */}
+            {hasOrders && (
+              <Link
+                href="/orders"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-4 py-2 text-gold-400 hover:bg-rich-black-800 rounded-lg transition-colors"
+              >
+                {t('nav.myOrders')}
+              </Link>
+            )}
+
+            {/* Language Switcher */}
+            <div className="px-4 py-2">
+              <p className="text-xs text-rich-black-400 uppercase mb-2">{t('nav.language')}</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setLanguage('en')
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className={cn(
+                    "flex-1 px-3 py-2 text-sm rounded-lg transition-colors flex items-center justify-center gap-2",
+                    language === 'en'
+                      ? 'bg-gold-500/20 text-gold-400 font-bold'
+                      : 'bg-rich-black-800 text-rich-black-400 hover:text-gold-400'
+                  )}
+                >
+                  <span>🇺🇸</span>
+                  English
+                </button>
+                <button
+                  onClick={() => {
+                    setLanguage('ar')
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className={cn(
+                    "flex-1 px-3 py-2 text-sm rounded-lg transition-colors flex items-center justify-center gap-2",
+                    language === 'ar'
+                      ? 'bg-gold-500/20 text-gold-400 font-bold'
+                      : 'bg-rich-black-800 text-rich-black-400 hover:text-gold-400'
+                  )}
+                >
+                  <span>🇸🇦</span>
+                  العربية
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </nav>
   )
 }
