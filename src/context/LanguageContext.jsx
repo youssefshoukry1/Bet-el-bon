@@ -30,13 +30,13 @@ export function LanguageProvider({ children }) {
     const t = (key, variables = {}) => {
         // @ts-ignore
         let translation = translations[language][key] || translations["en"][key] || key;
-        
+
         // Replace variables in the translation string
         Object.keys(variables).forEach(varName => {
             const placeholder = new RegExp(`{${varName}}`, 'g');
             translation = translation.replace(placeholder, variables[varName]);
         });
-        
+
         return translation;
     };
 
