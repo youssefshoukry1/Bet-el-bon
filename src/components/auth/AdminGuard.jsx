@@ -32,12 +32,18 @@ export function AdminGuard({ children, level = 'admin' }) {
                 type: level
             })
 
-            if (data.success) {
-                localStorage.setItem(`${level}Auth`, 'true')
-                setIsAuthenticated(true)
+            if (data.success && data.token) {
+                localStorage.setItem(`${level}Auth`, 'true');
+                localStorage.setItem(`${level}Token`, data.token);
+                // Set token for axios requests
+                const { setAuthToken } = await import('@/lib/api');
+                setAuthToken(data.token);
+                setIsAuthenticated(true);
+            } else {
+                setError('Invalid Password');
             }
         } catch (err) {
-            setError('Invalid Password')
+            setError('Invalid Password');
         }
     }
 
