@@ -18,11 +18,8 @@ const FILTER_TABS = [
 
 const STATUS_COLORS = {
     'paid': { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30' },
-    'completed': { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30' },
     'ready': { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/30' },
-    'preparing': { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/30' },
     'pending': { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/30' },
-    'awaiting_payment': { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/30' },
     'cancelled': { bg: 'bg-gray-500/10', text: 'text-gray-400', border: 'border-gray-500/30' },
     'waiting_for_cash': { bg: 'bg-indigo-500/10', text: 'text-indigo-400', border: 'border-indigo-500/30' }
 }

@@ -9,7 +9,6 @@ import { fetchOrderById } from '@/lib/api'
 // Define KITCHEN_STEPS outside component to avoid recreation
 const KITCHEN_STEPS = [
     { id: 'pending', label: 'Order Placed', icon: Clock },
-    { id: 'preparing', label: 'Preparing', icon: ChefHat },
     { id: 'ready', label: 'Ready to Serve', icon: Coffee },
 ]
 
@@ -32,8 +31,7 @@ export default function OrderStatusPage() {
     let activeStepIndex = -1
     // Map 'paid' to 'pending' for visual consistency in the stepper
     if (['paid', 'pending'].includes(currentStatus)) activeStepIndex = 0
-    else if (currentStatus === 'preparing') activeStepIndex = 1
-    else if (currentStatus === 'ready' || currentStatus === 'completed') activeStepIndex = 2
+    else if (currentStatus === 'ready' || currentStatus === 'completed') activeStepIndex = 1
 
     const isWaitingForCash = currentStatus === 'waiting_for_cash'
 
@@ -135,21 +133,11 @@ export default function OrderStatusPage() {
                                             <Clock size={18} /> Waiting for kitchen...
                                         </p>
                                     )}
-                                    {currentStatus === 'preparing' && (
-                                        <p className="text-gold-200 flex items-center justify-center gap-2">
-                                            <span className="animate-spin text-xl">⏳</span> Barista is brewing your coffee...
-                                        </p>
-                                    )}
                                     {currentStatus === 'ready' && (
                                         <div className="text-emerald-400 flex flex-col items-center">
                                             <Check size={48} className="mb-2" />
                                             <h3 className="text-xl font-bold">Order Ready!</h3>
                                             <p className="text-sm opacity-80">Please pick it up from the counter.</p>
-                                        </div>
-                                    )}
-                                    {currentStatus === 'completed' && (
-                                        <div className="text-rich-black-400">
-                                            <p>Order picked up. Enjoy!</p>
                                         </div>
                                     )}
                                 </div>

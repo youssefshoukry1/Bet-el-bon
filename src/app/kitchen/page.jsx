@@ -33,9 +33,7 @@ export default function KitchenPage() {
     if (isLoading) return <div className="p-8 text-gold-400">Loading KDS...</div>
 
     const activeOrders = orders.filter(o =>
-        o.status !== 'completed' &&
-        o.status !== 'cancelled' &&
-        o.status !== 'awaiting_payment' // Double check
+        o.status !== 'cancelled'
     )
 
     return (
@@ -107,29 +105,13 @@ export default function KitchenPage() {
                                 </CardContent>
 
                                 <div className="p-4 bg-rich-black-900 mt-auto border-t border-rich-black-800">
-                                    {(order.status === 'pending' || order.status === 'paid') && (
-                                        <Button
-                                            onClick={() => handleStatusUpdate(order._id, 'preparing')}
-                                            className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold"
-                                        >
-                                            Start Preparing
-                                        </Button>
-                                    )}
+
                                     {order.status === 'preparing' && (
                                         <Button
                                             onClick={() => handleStatusUpdate(order._id, 'ready')}
                                             className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
                                         >
                                             Mark Ready
-                                        </Button>
-                                    )}
-                                    {order.status === 'ready' && (
-                                        <Button
-                                            onClick={() => handleStatusUpdate(order._id, 'completed')}
-                                            variant="outline"
-                                            className="w-full border-rich-black-700 text-rich-black-400 hover:bg-rich-black-800"
-                                        >
-                                            Archive
                                         </Button>
                                     )}
                                 </div>

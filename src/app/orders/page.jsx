@@ -59,6 +59,7 @@ export default function MyOrdersPage() {
             })
 
             // 2. Clean up LocalStorage if we found dead IDs
+            // 2. Clean up LocalStorage if we found dead IDs
             if (deadIds.length > 0) {
                 console.warn(`Cleaning up ${deadIds.length} invalid/deleted orders from history.`)
                 const currentIds = JSON.parse(localStorage.getItem('myOrders') || '[]')
@@ -70,10 +71,8 @@ export default function MyOrdersPage() {
 
             // 3. Update UI
             setOrders(validOrders
-                .filter(order => order.status !== 'awaiting_payment') // 🔹 HIDE pending paymob orders
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Newest first
             )
-        } catch (error) {
             console.error("Failed to load orders", error)
         } finally {
             setIsLoading(false)

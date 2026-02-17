@@ -59,7 +59,7 @@ function AdminOrdersContent() {
 
     const sortedOrders = [...kitchenOrders].sort((a, b) => {
         // paid is new pending for kitchen
-        const statusPriority = { paid: 0, preparing: 1, ready: 2, completed: 3, cancelled: 4, pending: 0 }
+        const statusPriority = { paid: 0, pending: 0, ready: 1, cancelled: 2 }
         return statusPriority[a.status] - statusPriority[b.status] || new Date(b.createdAt) - new Date(a.createdAt)
     })
 
@@ -88,15 +88,14 @@ function AdminOrdersContent() {
                     {sortedOrders.map(order => (
                         <Card key={order._id} className={`
                         border-l-4 
-                        ${(order.status === 'pending' || order.status === 'paid') ? 'border-l-red-500' : ''}
-                        ${order.status === 'preparing' ? 'border-l-amber-500' : ''}
+                         ${(order.status === 'paid') ? 'border-l-red-500' : ''}
                         ${order.status === 'ready' ? 'border-l-emerald-500' : ''}
-                        ${order.status === 'completed' ? 'border-l-rich-black-600 opacity-60' : ''}
+                        ${order.status === 'cancelled' ? 'border-l-rich-black-600 opacity-60' : ''}
                     `}>
                             <CardContent className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-xl font-bold text-gold-100">#{order.orderNumber}</span>
+                                        <span className="text-xl font-bold text-gold-100"># {order.orderNumber}</span>
                                         <Badge variant={order.status === 'ready' ? 'success' : 'secondary'} className="uppercase">
                                             {order.status}
                                         </Badge>
@@ -129,23 +128,13 @@ function AdminOrdersContent() {
 
                                 {/* Actions */}
                                 <div className="flex items-center gap-2 w-full md:w-auto">
-                                    {(order.status === 'pending' || order.status === 'paid') && (
-                                        <Button onClick={() => handleStatusUpdate(order._id, 'preparing')} className="bg-amber-600 hover:bg-amber-700 w-full md:w-auto">
-                                            Start Preparing <ArrowRight size={16} className="ml-2" />
-                                        </Button>
-                                    )}
-                                    {order.status === 'preparing' && (
+                                    {(order.status === 'paid') && (
                                         <Button onClick={() => handleStatusUpdate(order._id, 'ready')} className="bg-emerald-600 hover:bg-emerald-700 w-full md:w-auto">
                                             Mark Ready <Check size={16} className="ml-2" />
                                         </Button>
                                     )}
                                     {order.status === 'ready' && (
-                                        <Button onClick={() => handleStatusUpdate(order._id, 'completed')} variant="outline" className="w-full md:w-auto">
-                                            Complete Order
-                                        </Button>
-                                    )}
-                                    {order.status === 'completed' && (
-                                        <span className="text-rich-black-500 text-sm font-medium px-4">Completed</span>
+                                        <span className="text-emerald-400 text-sm font-medium px-4">Ready</span>
                                     )}
                                 </div>
                             </CardContent>

@@ -26,7 +26,6 @@ export default function QueuePage() {
     })
 
     // Filter orders
-    const preparing = orders.filter(o => o.status === 'preparing')
     const ready = orders.filter(o => o.status === 'ready')
 
     // Optional: Auto-scroll or pagination if list is too long?
@@ -61,34 +60,7 @@ export default function QueuePage() {
             </header>
 
             {/* Content Grid */}
-            <div className="flex-1 grid grid-cols-2 gap-8 h-full">
-
-                {/* PREPARING COLUMN */}
-                <div className="bg-rich-black-900/50 rounded-3xl border border-rich-black-800 p-6 flex flex-col">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-amber-500 uppercase tracking-widest flex items-center justify-center gap-3">
-                        <span className="w-4 h-4 rounded-full bg-amber-500 animate-pulse" />
-                        Preparing
-                    </h2>
-
-                    <div className="grid grid-cols-2 gap-4 content-start">
-                        <AnimatePresence>
-                            {preparing.map(order => (
-                                <motion.div
-                                    key={order._id}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    layout
-                                    className="bg-rich-black-800 rounded-xl p-4 text-center border border-rich-black-700"
-                                >
-                                    <span className="text-4xl md:text-6xl font-bold text-white font-mono">
-                                        {order.orderNumber}
-                                    </span>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
-                    </div>
-                </div>
+            <div className="flex-1 grid grid-cols-1 gap-8 h-full">
 
                 {/* READY COLUMN */}
                 <div className="bg-gradient-to-br from-gold-900/20 to-rich-black-900 rounded-3xl border border-gold-500/30 p-6 flex flex-col relative overflow-hidden">
