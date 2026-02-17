@@ -290,8 +290,8 @@ export const translations = {
 
     // Order Status Page
     "orderStatus.title": "حالة الطلب",
-    "orderStatus.orderPlaced": "تم الانتهاء",
-    "orderStatus.readyToServe": "قيد التحضير",
+    "orderStatus.orderPlaced": "تم تقديم الطلب",
+    "orderStatus.readyToServe": "تم الانتهاء",
     "orderStatus.number": "رقم الطلب",
     "orderStatus.items": "العناصر",
     "orderStatus.total": "الإجمالي",

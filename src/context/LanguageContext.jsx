@@ -5,81 +5,43 @@ import { translations } from "../components/i18n/translations";
 const LanguageContext = createContext(undefined);
 
 export function LanguageProvider({ children }) {
-    // Default to English initially to avoid hydration mismatch
+    // Default to English initially to avoid hydration mismatch,
+    // or use a more complex logic if server-side detection is needed.
+    // For now, we'll stick to 'en' and update on mount if needed.
     const [language, setLanguage] = useState("en");
-    const [isClient, setIsClient] = useState(false);
-
-    // Detect direction based on language
-    const getDirection = (lang) => {
-        return lang === "ar" ? "rtl" : "ltr";
-    };
 
     // Load saved language on mount
     useEffect(() => {
-        setIsClient(true);
         const savedLang = localStorage.getItem("app-language");
-        if (savedLang && ["en", "ar"].includes(savedLang)) {
+        if (savedLang && ["en", "ar", "de"].includes(savedLang)) {
             setLanguage(savedLang);
-            updateDOM(savedLang);
-        } else {
-            // Default to English
-            updateDOM("en");
+            document.documentElement.dir = "ltr";
+            document.documentElement.lang = savedLang;
         }
     }, []);
 
-    const updateDOM = (lang) => {
-        const dir = getDirection(lang);
-        document.documentElement.dir = dir;
-        document.documentElement.lang = lang;
-        document.body.dir = dir;
-        // Update body class for Tailwind RTL support if needed
-        if (dir === "rtl") {
-            document.documentElement.classList.add("rtl");
-        } else {
-            document.documentElement.classList.remove("rtl");
-        }
-    };
-
     const handleSetLanguage = (lang) => {
-        if (["en", "ar"].includes(lang)) {
-            setLanguage(lang);
-            localStorage.setItem("app-language", lang);
-            updateDOM(lang);
-        }
+        setLanguage(lang);
+        localStorage.setItem("app-language", lang);
+        document.documentElement.dir = "ltr";
+        document.documentElement.lang = lang;
     };
 
-    // Translation function with support for variable interpolation
-    const t = (key, variables = {}) => {
-        // Get translation from current language or fallback to English
-        let translatedText =
-            translations[language]?.[key] || translations["en"]?.[key] || key;
-
-        // Replace variables in format {variableName}
-        if (variables && Object.keys(variables).length > 0) {
-            Object.entries(variables).forEach(([varKey, varValue]) => {
-                translatedText = translatedText.replace(
-                    new RegExp(`{${varKey}}`, "g"),
-                    varValue
-                );
-            });
-        }
-
-        return translatedText;
-    };
-
-    const direction = getDirection(language);
-
-    const value = {
-        language,
-        setLanguage: handleSetLanguage,
-        t,
-        dir: direction,
-        isRTL: direction === "rtl",
-        isClient,
+    const t = (key) => {
+        // @ts-ignore
+        return translations[language][key] || translations["en"][key] || key;
     };
 
     return (
-        <LanguageContext.Provider value={value}>
+        <LanguageContext.Provider
+            value={{
+                language,
+                setLanguage: handleSetLanguage,
+                t,
+                dir: "ltr",
+                isRTL: false,
+            }}
+        >
             {children}
         </LanguageContext.Provider>
     );
