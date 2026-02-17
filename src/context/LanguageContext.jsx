@@ -27,9 +27,17 @@ export function LanguageProvider({ children }) {
         document.documentElement.lang = lang;
     };
 
-    const t = (key) => {
+    const t = (key, variables = {}) => {
         // @ts-ignore
-        return translations[language][key] || translations["en"][key] || key;
+        let translation = translations[language][key] || translations["en"][key] || key;
+        
+        // Replace variables in the translation string
+        Object.keys(variables).forEach(varName => {
+            const placeholder = new RegExp(`{${varName}}`, 'g');
+            translation = translation.replace(placeholder, variables[varName]);
+        });
+        
+        return translation;
     };
 
     return (
