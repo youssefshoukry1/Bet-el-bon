@@ -12,9 +12,13 @@ export function AdminGuard({ children, level = 'admin' }) {
 
     useEffect(() => {
         const checkAuth = async () => {
-            // Check localStorage
-            const storedAuth = localStorage.getItem(`${level}Auth`) // 'adminAuth' or 'ownerAuth'
-            if (storedAuth === 'true') {
+            const storedAuth = localStorage.getItem(`${level}Auth`)
+            const storedToken = localStorage.getItem(`${level}Token`)
+            if (storedAuth === 'true' && storedToken) {
+                const { setAuthToken } = await import('@/lib/api')
+                setAuthToken(storedToken)
+                setIsAuthenticated(true)
+            } else if (storedAuth === 'true') {
                 setIsAuthenticated(true)
             }
             setIsLoading(false)

@@ -1,10 +1,21 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'https://bet-el-bon-api.vercel.app/api', // Fallback for local dev
+    baseURL: 'https://bet-el-bon-api.vercel.app/api',
     headers: {
         'Content-Type': 'application/json',
     },
+})
+
+// Auto-attach stored token if available
+api.interceptors.request.use((config) => {
+    if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('ownerToken') || localStorage.getItem('adminToken')
+        if (token && !config.headers['Authorization']) {
+            config.headers['Authorization'] = `Bearer ${token}`
+        }
+    }
+    return config
 })
 
 // helper to set manager/admin token
