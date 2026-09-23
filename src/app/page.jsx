@@ -1,6 +1,5 @@
 "use client"
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useRef, useEffect } from 'react'
 import { ProductCard } from '@/components/features/ProductCard'
 import { ProductModal } from '@/components/features/ProductModal'
 import { useQuery } from '@tanstack/react-query'
@@ -20,6 +19,34 @@ export default function Home() {
   const { t } = useLanguage()
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const touchStartX = useRef(null)
+  const videoRef = useRef(null)
+
+  // Control video playback based on active slide
+  useEffect(() => {
+    if (videoRef.current) {
+      if (currentSlide === 0) {
+        videoRef.current.play().catch(() => {})
+      } else {
+        videoRef.current.pause()
+      }
+    }
+  }, [currentSlide])
+
+  // Touch swipe handling
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 40) {
+      setCurrentSlide(prev => (prev === 0 ? 1 : 0))
+    }
+    touchStartX.current = null
+  }
 
   const { data: products = [], isLoading, error } = useQuery({
     queryKey: ['drinks'],
@@ -50,26 +77,67 @@ export default function Home() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-rich-black-800/60 bg-rich-black-900/40 shadow-2xl">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="relative w-full aspect-[16/9] sm:aspect-[2.2/1] md:aspect-[2.5/1] max-h-[380px] overflow-hidden"
-        >
-          <Image
-            src="/betelboon.webp"
-            alt="Bayt Al-Bunn"
-            fill
-            priority
-            className="object-cover object-center transition-transform duration-700 hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
-          />
+      <section
+        className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-rich-black-800/60 bg-rich-black-900/40 shadow-2xl select-none"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="relative w-full aspect-[16/9] sm:aspect-[2.2/1] md:aspect-[2.5/1] max-h-[380px] overflow-hidden">
+          {/* Slides Track */}
+          <div
+            className="flex w-full h-full transition-transform duration-500 ease-out will-change-transform"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {/* Slide 0: Video */}
+            <div className="relative min-w-full h-full shrink-0">
+              <video
+                ref={videoRef}
+                src="https://res.cloudinary.com/dgksfb9g4/video/upload/v1790127426/gemini_generated_video_beb4a8b6_ojq8rc.mp4"
+                poster="/betelboon.webp"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+
+            {/* Slide 1: Image */}
+            <div className="relative min-w-full h-full shrink-0">
+              <Image
+                src="/betelboon.webp"
+                alt="Bayt Al-Bunn"
+                fill
+                priority
+                className="object-cover object-center"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+              />
+            </div>
+          </div>
+
           {/* Subtle lighting vignette */}
           <div className="absolute inset-0 bg-gradient-to-t from-rich-black-950/80 via-transparent to-rich-black-950/20 pointer-events-none" />
           {/* Subtle gold accent border line */}
           <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold-400/40 to-transparent pointer-events-none" />
-        </motion.div>
+
+          {/* Pagination Indicators */}
+          <div className="absolute bottom-3 inset-x-0 flex justify-center items-center gap-2 z-10">
+            {[0, 1].map((idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setCurrentSlide(idx)}
+                aria-label={`Slide ${idx + 1}`}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  currentSlide === idx
+                    ? 'w-6 bg-gold-400 shadow-[0_0_8px_rgba(212,175,55,0.6)]'
+                    : 'w-2 bg-white/40 hover:bg-white/70'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Categories */}
