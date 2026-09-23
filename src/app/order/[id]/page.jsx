@@ -45,9 +45,7 @@ export default function OrderStatusPage() {
             >
                 <div className="mb-8">
                     <h1 className="text-3xl md:text-5xl font-amiri font-bold text-gold-100 mb-2">{t('orders.orderNumber', { number: order.orderNumber })}</h1>
-                    <p className="text-rich-black-300">
-                        {isWaitingForCash ? t('orderStatus.actionRequired') : t('orderStatus.thankYou')}
-                    </p>
+                   
                 </div>
 
                 <Card className={`border-2 ${isWaitingForCash ? 'border-amber-500 shadow-amber-900/20' : 'border-gold-500/30 shadow-gold-900/10'} shadow-2xl`}>

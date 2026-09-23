@@ -116,7 +116,7 @@ export default function CheckoutPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <h1 className="text-4xl font-amiri font-bold text-gold-100 mb-8">{t('checkout.title')}</h1>
+
 
                 <div className="grid lg:grid-cols-3 gap-8 items-start">
                     {/* Left Column - Details */}

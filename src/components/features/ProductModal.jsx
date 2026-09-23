@@ -120,12 +120,9 @@ export function ProductModal({ product, isOpen, onClose }) {
                                 )}
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className={cn("p-2 rounded-full", customizations.spiced ? "bg-amber-500/20 text-amber-500" : "bg-rich-black-800 text-rich-black-500")}>
-                                        <Flame size={20} />
-                                    </div>
+       
                                     <div>
                                         <span className={cn("block font-bold", customizations.spiced ? "text-amber-100" : "text-rich-black-300")}>{t('product.spiced')}</span>
-                                        <span className="text-xs text-rich-black-500">{t('product.spicedDesc')}</span>
                                     </div>
                                 </div>
                                 <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",

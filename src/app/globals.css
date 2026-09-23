@@ -24,8 +24,9 @@
   --color-rich-black-900: #0a0a0a; /* Deep Background */
   --color-rich-black-950: #050505;
 
-  --font-amiri: var(--font-amiri);
-  --font-inter: var(--font-inter);
+  --font-amiri: var(--font-poppins), var(--font-amiri), sans-serif;
+  --font-poppins: var(--font-poppins), var(--font-amiri), sans-serif;
+  --font-inter: var(--font-inter), sans-serif;
 }
 
 :root {
@@ -45,7 +46,7 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter);
+  font-family: var(--font-inter), sans-serif;
 }
 
 h1,
@@ -54,7 +55,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-amiri);
+  font-family: var(--font-poppins), var(--font-amiri), sans-serif;
   color: var(--primary);
 }
 

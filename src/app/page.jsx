@@ -50,20 +50,25 @@ export default function Home() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <section className="relative text-center  overflow-hidden rounded-3xl -mx-4 md:mx-0 flex items-center justify-center">
-
+      <section className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-rich-black-800/60 bg-rich-black-900/40 shadow-2xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-10 px-4 w-90 h-100 lg:w-120  bg-rich-black-950"
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="relative w-full aspect-[16/9] sm:aspect-[2.2/1] md:aspect-[2.5/1] max-h-[380px] overflow-hidden"
         >
           <Image
-            src="https://res.cloudinary.com/djkxs77gs/image/upload/v1771287697/%D8%A8%D9%8A%D8%AA-%D8%A7%D9%84%D8%A8%D9%86_uts77v.jpg"
+            src="/betelboon.webp"
             alt="Bayt Al-Bunn"
             fill
-            sizes="(max-width: 768px) 160px, (max-width: 1200px) 256px, 320px"
+            priority
+            className="object-cover object-center transition-transform duration-700 hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
           />
+          {/* Subtle lighting vignette */}
+          <div className="absolute inset-0 bg-gradient-to-t from-rich-black-950/80 via-transparent to-rich-black-950/20 pointer-events-none" />
+          {/* Subtle gold accent border line */}
+          <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold-400/40 to-transparent pointer-events-none" />
         </motion.div>
       </section>
 
