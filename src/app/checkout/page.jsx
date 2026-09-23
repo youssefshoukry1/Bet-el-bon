@@ -6,12 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Banknote, Smartphone } from 'lucide-react'
+import { ArrowLeft, Banknote, Smartphone, Building2 } from 'lucide-react'
 import Link from 'next/link'
 import { useMutation } from '@tanstack/react-query'
 import { createOrder } from '@/lib/api'
 import { InstitutionSelector } from '@/components/features/InstitutionSelector'
-import { Building2 } from 'lucide-react'
 
 export default function CheckoutPage() {
     const { items, total, clearCart } = useCart()
@@ -22,8 +21,6 @@ export default function CheckoutPage() {
     const [notes, setNotes] = useState('')
     const [selectedInst, setSelectedInst] = useState(null)
     const [isInstModalOpen, setIsInstModalOpen] = useState(false)
-
-
 
     useEffect(() => {
         const stored = JSON.parse(localStorage.getItem('selectedInstitution'))
@@ -38,6 +35,16 @@ export default function CheckoutPage() {
         setSelectedInst(inst)
         localStorage.setItem('selectedInstitution', JSON.stringify(inst))
         setIsInstModalOpen(false)
+    }
+
+    const getSizeLabel = (size) => {
+        if (!size) return ''
+        const sizeMap = {
+            small: 'product.small',
+            medium: 'product.medium',
+            large: 'product.large'
+        }
+        return t(sizeMap[size.toLowerCase()] || size)
     }
 
     // Mutation for creating order
@@ -116,8 +123,6 @@ export default function CheckoutPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-
-
                 <div className="grid lg:grid-cols-3 gap-8 items-start">
                     {/* Left Column - Details */}
                     <div className="lg:col-span-2 space-y-6">
@@ -131,14 +136,14 @@ export default function CheckoutPage() {
                                     <div key={item.cartId} className="flex justify-between items-center text-sm border-b border-rich-black-800 pb-2 last:border-0">
                                         <div>
                                             <div className="font-bold text-gold-50">{item.quantity}x {item.title}</div>
-                                            <div className="text-rich-black-400 text-xs">{item.selectedSize}</div>
+                                            <div className="text-rich-black-400 text-xs">{getSizeLabel(item.selectedSize)}</div>
                                         </div>
-                                        <div className="text-gold-200">{item.price * item.quantity} EGP</div>
+                                        <div className="text-gold-200 font-bold">{item.price * item.quantity} {t('term.egp')}</div>
                                     </div>
                                 ))}
                                 <div className="pt-4 flex justify-between items-center text-xl font-bold text-gold-400 border-t border-rich-black-700">
                                     <span>{t('checkout.total')}</span>
-                                    <span>{total} EGP</span>
+                                    <span>{total} {t('term.egp')}</span>
                                 </div>
                             </CardContent>
                         </Card>
@@ -152,7 +157,7 @@ export default function CheckoutPage() {
                                 <label className="block text-sm font-medium text-rich-black-300 mb-2">{t('checkout.notes')}</label>
                                 <textarea
                                     className="w-full bg-rich-black-950 border border-rich-black-700 rounded-lg p-3 text-gold-100 focus:outline-none focus:border-gold-500 transition-colors h-24 resize-none"
-                                    placeholder="Allergies, extra ice, etc..."
+                                    placeholder={t('checkout.notesPlaceholder')}
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
                                 />

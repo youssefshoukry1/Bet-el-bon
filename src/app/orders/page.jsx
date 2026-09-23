@@ -148,15 +148,16 @@ export default function MyOrdersPage() {
 
     const getStatusLabel = (status) => {
         const statusMap = {
-            'awaiting_payment': 'awaiting_payment',
-            'waiting_for_cash': 'waiting_for_cash',
+            'awaiting_payment': 'status.awaiting_payment',
+            'waiting_for_cash': 'status.waiting_for_cash',
             'pending': 'status.pending',
             'paid': 'status.paid',
             'preparing': 'status.preparing',
             'ready': 'status.ready',
             'completed': 'status.completed',
+            'cancelled': 'status.cancelled',
         }
-        return t(statusMap[status] || status)
+        return t(statusMap[status] || `status.${status}`)
     }
 
     return (
@@ -193,7 +194,7 @@ export default function MyOrdersPage() {
                                             <Clock size={12} /> {new Date(order.createdAt).toLocaleString()}
                                         </span>
                                         <div className="text-sm text-rich-black-300 mt-1">
-                                            {t('orders.items', { count: order.items.length })} • {order.totalPrice} EGP
+                                            {t('orders.items', { count: order.items?.length || 0 })} • {order.totalPrice} {t('term.egp')}
                                         </div>
                                     </div>
                                     <ChevronRight className="text-rich-black-600 group-hover:text-gold-400 transition-colors" />

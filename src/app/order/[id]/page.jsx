@@ -59,7 +59,7 @@ export default function OrderStatusPage() {
                                 </div>
                                 <h2 className="text-2xl font-bold text-amber-500 mb-2">{t('orderStatus.paymentRequired')}</h2>
                                 <p className="text-rich-black-300 mb-6 max-w-xs mx-auto">
-                                    {t('orderStatus.proceedCashPoint')} <strong>{order.totalPrice} EGP</strong>.
+                                    {t('orderStatus.proceedCashPoint')} <strong>{order.totalPrice} {t('term.egp')}</strong>.
                                 </p>
                                 <div className="bg-rich-black-950 px-6 py-3 rounded-lg border border-rich-black-800">
                                     <span className="text-sm text-rich-black-400 uppercase tracking-widest">{t('orderStatus.yourNumber')}</span>
@@ -77,7 +77,7 @@ export default function OrderStatusPage() {
                                                 <div className="bg-emerald-500/20 p-2 rounded-full">
                                                     <CheckCircle2 size={24} />
                                                 </div>
-                                                <div className="text-left gap-2 flex flex-col">
+                                                <div className="text-start gap-2 flex flex-col">
                                                     <h3 className="font-bold text-lg leading-tight">{t('orderStatus.paymentSuccessful')}</h3>
                                                     <p className="text-xs text-emerald-300/80">{t('orderStatus.electronicPaymentConfirmed')}</p>
                                                 </div>

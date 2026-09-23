@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Lock } from 'lucide-react'
 import api from '@/lib/api'
+import { useLanguage } from '@/context/LanguageContext'
 
 export function AdminGuard({ children, level = 'admin' }) {
+    const { t } = useLanguage()
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [password, setPassword] = useState('')
@@ -44,10 +46,10 @@ export function AdminGuard({ children, level = 'admin' }) {
                 setAuthToken(data.token);
                 setIsAuthenticated(true);
             } else {
-                setError('Invalid Password');
+                setError(t('auth.invalidPassword'));
             }
         } catch (err) {
-            setError('Invalid Password');
+            setError(t('auth.invalidPassword'));
         }
     }
 
@@ -65,10 +67,10 @@ export function AdminGuard({ children, level = 'admin' }) {
                         <Lock size={32} />
                     </div>
                     <h1 className="text-2xl font-amiri font-bold text-gold-100">
-                        {level === 'owner' ? 'Owner Access' : 'Admin Access'}
+                        {level === 'owner' ? t('auth.ownerAccess') : t('auth.adminAccess')}
                     </h1>
                     <p className="text-rich-black-400 text-sm mt-2 text-center">
-                        This area is protected. Please enter your password.
+                        {t('auth.protected')}
                     </p>
                 </div>
 
@@ -78,7 +80,7 @@ export function AdminGuard({ children, level = 'admin' }) {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter Password"
+                            placeholder={t('auth.passwordPlaceholder')}
                             className="w-full bg-rich-black-950 border border-rich-black-700 rounded-lg p-4 text-center text-xl tracking-widest text-gold-100 focus:outline-none focus:border-gold-500 transition-colors"
                             autoFocus
                         />
@@ -87,7 +89,7 @@ export function AdminGuard({ children, level = 'admin' }) {
                     {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
                     <Button className="w-full h-12 text-lg font-bold">
-                        Unlock
+                        {t('auth.unlock')}
                     </Button>
                 </form>
             </div>

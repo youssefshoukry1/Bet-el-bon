@@ -1,12 +1,13 @@
 "use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { fetchInstitutions, createInstitution, deleteInstitution } from '@/lib/api'
-import { Card, CardContent, CardHeader } from '@/components/ui/Card'
+import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { useState } from 'react'
 import { Building2, Plus, Trash2 } from 'lucide-react'
 import { AdminGuard } from '@/components/auth/AdminGuard'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function AdminInstitutionsPage() {
     return (
@@ -17,6 +18,7 @@ export default function AdminInstitutionsPage() {
 }
 
 function InstitutionsContent() {
+    const { t } = useLanguage()
     const queryClient = useQueryClient()
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [formData, setFormData] = useState({ name: '', code: '' })
@@ -33,7 +35,7 @@ function InstitutionsContent() {
             setIsCreateOpen(false)
             setFormData({ name: '', code: '' })
         },
-        onError: (err) => alert("Failed: " + err.message)
+        onError: (err) => alert(t('admin.error', { error: err.message }))
     })
 
     const deleteMutation = useMutation({
@@ -42,18 +44,18 @@ function InstitutionsContent() {
     })
 
     const handleSubmit = () => {
-        if (!formData.name || !formData.code) return alert('Fill all fields')
+        if (!formData.name || !formData.code) return alert(t('institutions.fillAll'))
         createMutation.mutate(formData)
     }
 
-    if (isLoading) return <div className="p-8 text-gold-400">Loading...</div>
+    if (isLoading) return <div className="p-8 text-gold-400 text-center">{t('term.loading')}</div>
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-amiri font-bold text-gold-400">Institutions</h1>
+                <h1 className="text-3xl font-amiri font-bold text-gold-400">{t('institutions.title')}</h1>
                 <Button onClick={() => setIsCreateOpen(true)}>
-                    <Plus className="mr-2" size={20} /> Add Branch
+                    <Plus className="me-2" size={20} /> {t('institutions.addBranch')}
                 </Button>
             </div>
 
@@ -62,7 +64,7 @@ function InstitutionsContent() {
                     <Card key={inst._id} className="border border-rich-black-700">
                         <CardContent className="p-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-rich-black-800 flex items-center justify-center text-gold-400">
+                                <div className="w-10 h-10 rounded-full bg-rich-black-800 flex items-center justify-center text-gold-400 shrink-0">
                                     <Building2 size={20} />
                                 </div>
                                 <div>
@@ -74,7 +76,7 @@ function InstitutionsContent() {
                                 variant="danger"
                                 size="icon"
                                 onClick={() => {
-                                    if (confirm(`Delete ${inst.name}?`)) deleteMutation.mutate(inst._id)
+                                    if (confirm(t('institutions.deleteConfirm', { name: inst.name }))) deleteMutation.mutate(inst._id)
                                 }}
                             >
                                 <Trash2 size={18} />
@@ -85,10 +87,10 @@ function InstitutionsContent() {
             </div>
 
             {/* Create Modal */}
-            <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title="Add New Branch">
+            <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title={t('institutions.modalTitle')}>
                 <div className="p-4 space-y-4">
                     <div>
-                        <label className="text-sm text-rich-black-400">Branch Name</label>
+                        <label className="text-sm text-rich-black-400 mb-1 block">{t('institutions.branchName')}</label>
                         <input
                             className="w-full bg-rich-black-800 p-2 rounded text-white border border-rich-black-700 focus:border-gold-500 outline-none"
                             placeholder="e.g. Main Street Branch"
@@ -97,7 +99,7 @@ function InstitutionsContent() {
                         />
                     </div>
                     <div>
-                        <label className="text-sm text-rich-black-400">Branch Code</label>
+                        <label className="text-sm text-rich-black-400 mb-1 block">{t('institutions.branchCode')}</label>
                         <input
                             className="w-full bg-rich-black-800 p-2 rounded text-white border border-rich-black-700 focus:border-gold-500 outline-none uppercase"
                             placeholder="e.g. MSB01"
@@ -107,7 +109,7 @@ function InstitutionsContent() {
                     </div>
 
                     <Button onClick={handleSubmit} className="w-full" isLoading={createMutation.isPending}>
-                        Create Branch
+                        {t('institutions.createBranch')}
                     </Button>
                 </div>
             </Modal>

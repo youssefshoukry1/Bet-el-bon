@@ -91,7 +91,7 @@ export function ProductModal({ product, isOpen, onClose }) {
                                     className={cn("mb-2 transition-transform duration-300", size === s.size && "scale-110 text-gold-400")}
                                 />
                                 <span className="capitalize font-bold text-sm">{getSizeLabel(s.size)}</span>
-                                <span className="text-xs mt-1 opacity-70 group-hover:opacity-100 transition-opacity">{s.price} EGP</span>
+                                <span className="text-xs mt-1 opacity-70 group-hover:opacity-100 transition-opacity">{s.price} {t('term.egp')}</span>
 
                                 {size === s.size && (
                                     <motion.div
@@ -163,7 +163,7 @@ export function ProductModal({ product, isOpen, onClose }) {
                 <div className="pt-4 mt-6 border-t border-rich-black-800 flex items-center justify-between gap-4">
                     <div className="flex flex-col">
                         <span className="text-xs text-rich-black-400">{t('product.total')}</span>
-                        <span className="text-2xl font-bold text-gold-400 font-amiri">{currentPrice} EGP</span>
+                        <span className="text-2xl font-bold text-gold-400 font-amiri">{currentPrice} {t('term.egp')}</span>
                     </div>
                     <Button onClick={handleAddToCart} size="lg" className="flex-1 font-bold">
                         {t('product.addToCart')}

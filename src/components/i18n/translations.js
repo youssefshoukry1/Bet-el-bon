@@ -1,4 +1,3 @@
-
 export const translations = {
   en: {
     // Navigation & Header
@@ -7,6 +6,7 @@ export const translations = {
     "nav.language": "Language",
     "nav.langEn": "English",
     "nav.langAr": "العربية",
+    "nav.switchLanguage": "Switch Language",
 
     // Homepage - Categories
     "category.all": "All Menu",
@@ -22,13 +22,14 @@ export const translations = {
     "product.price": "{price} EGP",
     "product.basePrice": "{price} EGP",
 
-    // Product Modal
+    // Product Modal & Customizations
     "product.size": "Size",
     "product.small": "Small",
     "product.medium": "Medium",
     "product.large": "Large",
     "product.customizations": "Customizations",
     "product.sugarLevel": "Sugar Level",
+    "product.sugar": "Sugar",
     "product.noSugar": "No Sugar",
     "product.1Shot": "1 Shot",
     "product.2Shots": "2 Shots",
@@ -41,6 +42,20 @@ export const translations = {
     "link.backToMenu": "Back to Menu",
     "link.browseMenu": "Browse Menu",
 
+    // Cart
+    "cart.title": "Shopping Cart",
+    "cart.yourOrder": "Your Order",
+    "cart.empty": "Your cart is empty",
+    "cart.subtotal": "Subtotal",
+    "cart.tax": "Tax",
+    "cart.total": "Total",
+    "cart.totalAmount": "Total Amount",
+    "cart.checkout": "Checkout",
+    "cart.proceedCheckout": "Proceed to Checkout",
+    "cart.continueShopping": "Continue Shopping",
+    "cart.remove": "Remove",
+    "cart.quantity": "Quantity",
+
     // Checkout Page
     "checkout.title": "Checkout",
     "checkout.cartEmpty": "Your cart is empty",
@@ -48,14 +63,29 @@ export const translations = {
     "checkout.items": "{count} items",
     "checkout.subtotal": "Subtotal",
     "checkout.notes": "Add a note",
+    "checkout.notesPlaceholder": "Allergies, extra ice, special requests...",
     "checkout.specialRequest": "Special Request",
     "checkout.branch": "Select Branch",
     "checkout.selectBranch": "Please select a branch",
     "checkout.paymentMethod": "Payment Method",
     "checkout.cash": "Cash",
-    "checkout.paymob": "Paymob",
+    "checkout.paymob": "Card / Electronic (Paymob)",
     "checkout.placeOrder": "Place Order",
     "checkout.total": "Total",
+
+    // Branches & Institutions
+    "institution.selectLocation": "Select Location",
+    "institution.selectBranchDesc": "Please select which branch you are ordering from.",
+    "institution.loadingBranches": "Loading branches...",
+    "institution.noBranches": "No branches found.",
+    "institutions.title": "Branches & Institutions",
+    "institutions.addBranch": "Add Branch",
+    "institutions.branchName": "Branch Name",
+    "institutions.branchCode": "Branch Code",
+    "institutions.createBranch": "Create Branch",
+    "institutions.modalTitle": "Add New Branch",
+    "institutions.deleteConfirm": "Delete {name}?",
+    "institutions.fillAll": "Please fill all fields",
 
     // Orders Page
     "orders.title": "My Orders",
@@ -75,6 +105,8 @@ export const translations = {
     "status.completed": "Completed",
     "status.cancelled": "Cancelled",
     "status.pending_payment": "Pending Payment",
+    "status.waiting_for_cash": "Waiting for Cashier",
+    "status.awaiting_payment": "Awaiting Payment",
 
     // Order Status Page
     "orderStatus.title": "Order Status",
@@ -87,7 +119,7 @@ export const translations = {
     "orderStatus.thankYou": "Thank you for ordering from Bayt Al-Bunn",
     "orderStatus.actionRequired": "Action Required",
     "orderStatus.paymentRequired": "Payment Required",
-    "orderStatus.proceedCashPoint": "Please proceed to Cash Point to confirm your payment",
+    "orderStatus.proceedCashPoint": "Please proceed to Cash Point to confirm your payment of",
     "orderStatus.yourNumber": "Your Number",
     "orderStatus.paymentSuccessful": "Payment Successful",
     "orderStatus.electronicPaymentConfirmed": "Electronic payment confirmed",
@@ -95,8 +127,18 @@ export const translations = {
     "orderStatus.paymentFailed": "Payment Failed",
     "orderStatus.orderReady": "Order Ready!",
     "orderStatus.pickupCounter": "Please pick it up from the counter.",
-    "orderStatus.waitingForKitchen": "Waiting for kitchen...",
+    "orderStatus.waitingForKitchen": "Preparing your order...",
     "orderStatus.loading": "Loading Order...",
+
+    // Cashier Terminal
+    "cashier.title": "Cashier Terminal",
+    "cashier.mode": "Mode: Cash Confirmation",
+    "cashier.branch": "Branch",
+    "cashier.selectBranchPrompt": "Select Branch to Start Cashier Mode",
+    "cashier.selectBranchBtn": "Select Branch",
+    "cashier.noPendingOrders": "No pending cash orders",
+    "cashier.waitingCustomers": "Waiting for customers...",
+    "cashier.confirmPayment": "Confirm Payment",
 
     // Kitchen Page
     "kitchen.title": "Kitchen Display System",
@@ -105,6 +147,7 @@ export const translations = {
     "kitchen.orderNumber": "Order #{number}",
     "kitchen.items": "Items",
     "kitchen.noActiveOrders": "No active orders",
+    "kitchen.loading": "Loading KDS...",
 
     // Queue Page
     "queue.title": "ORDER STATUS",
@@ -112,10 +155,20 @@ export const translations = {
     "queue.selectBranch": "Select a branch",
     "queue.noOrders": "No orders ready yet",
     "queue.ready": "Ready",
+    "queue.readyToServe": "Ready to Serve",
+
+    // Order Management (Admin)
+    "orderManagement.title": "Order Management",
+    "orderManagement.switchBranch": "Switch Branch",
+    "orderManagement.selectBranchPrompt": "Please select a branch to manage orders.",
+    "orderManagement.noOrders": "No orders found for this branch.",
+    "orderManagement.markReady": "Mark Ready",
+    "orderManagement.note": "Note",
 
     // Admin Page
     "admin.title": "Menu Management",
     "admin.addNewDrink": "Add New Drink",
+    "admin.updateDrink": "Update Drink",
     "admin.loading": "Loading...",
     "admin.title_field": "Title",
     "admin.description_field": "Description",
@@ -125,6 +178,7 @@ export const translations = {
     "admin.coffeeType": "Coffee Type",
     "admin.image": "Image URL",
     "admin.create": "Create Drink",
+    "admin.update": "Update",
     "admin.deleteConfirm": "Delete {title}?",
     "admin.delete": "Delete",
     "admin.edit": "Edit",
@@ -136,7 +190,7 @@ export const translations = {
     "dashboard.title": "Dashboard",
     "dashboard.totalRevenue": "Total Revenue",
     "dashboard.totalOrders": "Total Orders",
-    "dashboard.institutions": "{count} institutions",
+    "dashboard.institutions": "{count} branches",
     "dashboard.activeOrders": "Active Orders",
     "dashboard.today": "Today",
     "dashboard.thisWeek": "This Week",
@@ -150,8 +204,11 @@ export const translations = {
     "auth.ownerAccess": "Owner Access",
     "auth.protected": "This area is protected. Please enter your password.",
     "auth.password": "Password",
+    "auth.passwordPlaceholder": "Enter Password",
+    "auth.unlock": "Unlock",
     "auth.login": "Login",
     "auth.unauthorized": "Unauthorized",
+    "auth.invalidPassword": "Invalid Password",
 
     // Errors & Messages
     "error.failedLoadMenu": "Failed to load menu. Please try again later.",
@@ -165,17 +222,6 @@ export const translations = {
     "success.orderUpdated": "Order updated successfully",
     "success.drinkCreated": "Drink created successfully",
     "success.drinkDeleted": "Drink deleted successfully",
-
-    // Cart
-    "cart.title": "Shopping Cart",
-    "cart.empty": "Your cart is empty",
-    "cart.subtotal": "Subtotal",
-    "cart.tax": "Tax",
-    "cart.total": "Total",
-    "cart.checkout": "Checkout",
-    "cart.continueShopping": "Continue Shopping",
-    "cart.remove": "Remove",
-    "cart.quantity": "Quantity",
 
     // Buttons & Common
     "btn.add": "Add",
@@ -193,7 +239,9 @@ export const translations = {
     "btn.settings": "Settings",
     "btn.apply": "Apply",
 
-    // Generic Terms
+    // Generic Terms & Currency
+    "term.egp": "EGP",
+    "term.currency": "EGP",
     "term.loading": "Loading...",
     "term.error": "Error",
     "term.success": "Success",
@@ -217,6 +265,7 @@ export const translations = {
     "nav.language": "اللغة",
     "nav.langEn": "English",
     "nav.langAr": "العربية",
+    "nav.switchLanguage": "تغيير اللغة",
 
     // Homepage - Categories
     "category.all": "القائمة كاملة",
@@ -228,17 +277,18 @@ export const translations = {
     "category.sandwiches": "سندويتشات",
 
     // Products
-    "product.noItems": "لا توجد عناصر في هذه الفئة",
-    "product.price": "{price} جنيه",
-    "product.basePrice": "{price} جنيه",
+    "product.noItems": "لا توجد عناصر في هذه الفئة.",
+    "product.price": "{price} ج.م",
+    "product.basePrice": "{price} ج.م",
 
-    // Product Modal
+    // Product Modal & Customizations
     "product.size": "الحجم",
     "product.small": "صغير",
     "product.medium": "وسط",
     "product.large": "كبير",
     "product.customizations": "التخصيصات",
     "product.sugarLevel": "مستوى السكر",
+    "product.sugar": "سكر",
     "product.noSugar": "بدون سكر",
     "product.1Shot": "معيار واحد",
     "product.2Shots": "معيارين",
@@ -251,21 +301,50 @@ export const translations = {
     "link.backToMenu": "عودة للقائمة",
     "link.browseMenu": "تصفح القائمة",
 
+    // Cart
+    "cart.title": "سلة التسوق",
+    "cart.yourOrder": "طلبك",
+    "cart.empty": "سلتك فارغة",
+    "cart.subtotal": "المجموع الفرعي",
+    "cart.tax": "الضريبة",
+    "cart.total": "الإجمالي",
+    "cart.totalAmount": "إجمالي المبلغ",
+    "cart.checkout": "إتمام الطلب",
+    "cart.proceedCheckout": "المتابعة لإتمام الطلب",
+    "cart.continueShopping": "متابعة التسوق",
+    "cart.remove": "إزالة",
+    "cart.quantity": "الكمية",
+
     // Checkout Page
-    "checkout.title": "الدفع",
+    "checkout.title": "إتمام الطلب",
     "checkout.cartEmpty": "سلتك فارغة",
     "checkout.orderSummary": "ملخص الطلب",
     "checkout.items": "{count} عناصر",
     "checkout.subtotal": "المجموع الفرعي",
-    "checkout.notes": "أضف ملاحظة ",
+    "checkout.notes": "أضف ملاحظة",
+    "checkout.notesPlaceholder": "ملاحظات إضافية، حساسية، ثلج إضافي...",
     "checkout.specialRequest": "طلب خاص",
     "checkout.branch": "اختر الفرع",
     "checkout.selectBranch": "يرجى اختيار فرع",
     "checkout.paymentMethod": "طريقة الدفع",
     "checkout.cash": "نقدي",
-    "checkout.paymob": "PayMob",
+    "checkout.paymob": "فيزا",
     "checkout.placeOrder": "تأكيد الطلب",
     "checkout.total": "الإجمالي",
+
+    // Branches & Institutions
+    "institution.selectLocation": "اختر الفرع",
+    "institution.selectBranchDesc": "يرجى اختيار الفرع الذي تطلب منه.",
+    "institution.loadingBranches": "جاري تحميل الفروع...",
+    "institution.noBranches": "لم يتم العثور على فروع.",
+    "institutions.title": "الفروع والمؤسسات",
+    "institutions.addBranch": "إضافة فرع",
+    "institutions.branchName": "اسم الفرع",
+    "institutions.branchCode": "كود الفرع",
+    "institutions.createBranch": "إنشاء فرع",
+    "institutions.modalTitle": "إضافة فرع جديد",
+    "institutions.deleteConfirm": "هل أنت متأكد من حذف {name}؟",
+    "institutions.fillAll": "يرجى ملء جميع الحقول",
 
     // Orders Page
     "orders.title": "طلباتي",
@@ -285,46 +364,70 @@ export const translations = {
     "status.completed": "مكتمل",
     "status.cancelled": "ملغى",
     "status.pending_payment": "انتظار الدفع",
+    "status.waiting_for_cash": "في انتظار الدفع للكاشير",
+    "status.awaiting_payment": "في انتظار الدفع",
 
     // Order Status Page
     "orderStatus.title": "حالة الطلب",
     "orderStatus.orderPlaced": "تم تقديم الطلب",
-    "orderStatus.readyToServe": "تم الانتهاء",
+    "orderStatus.readyToServe": "جاهز للاستلام",
     "orderStatus.number": "رقم الطلب",
     "orderStatus.items": "العناصر",
     "orderStatus.total": "الإجمالي",
     "orderStatus.paymentMethod": "طريقة الدفع",
+    "orderStatus.thankYou": "شكراً لطلبك من بيت البن",
     "orderStatus.actionRequired": "إجراء مطلوب",
     "orderStatus.paymentRequired": "الدفع مطلوب",
-    "orderStatus.proceedCashPoint": "يرجى التوجه إلى نقطة الكاشير لتأكيد الدفع",
+    "orderStatus.proceedCashPoint": "يرجى التوجه إلى الكاشير لتأكيد الدفع بمبلغ",
     "orderStatus.yourNumber": "رقمك",
     "orderStatus.paymentSuccessful": "تم الدفع بنجاح",
     "orderStatus.electronicPaymentConfirmed": "تم تأكيد الدفع الإلكتروني",
     "orderStatus.paymentProcessing": "جاري معالجة الدفع...",
     "orderStatus.paymentFailed": "فشل الدفع",
     "orderStatus.orderReady": "الطلب جاهز!",
-    "orderStatus.pickupCounter": "يرجى استلامه .",
-    "orderStatus.waitingForKitchen": "قيد التحضير",
+    "orderStatus.pickupCounter": "يرجى استلام طلبك من المنصة.",
+    "orderStatus.waitingForKitchen": "جاري تحضير طلبك...",
     "orderStatus.loading": "جاري تحميل الطلب...",
+
+    // Cashier Terminal
+    "cashier.title": "شاشة الكاشير",
+    "cashier.mode": "الوضع: تأكيد الدفع النقدي",
+    "cashier.branch": "الفرع",
+    "cashier.selectBranchPrompt": "اختر الفرع لبدء وضع الكاشير",
+    "cashier.selectBranchBtn": "اختر الفرع",
+    "cashier.noPendingOrders": "لا توجد طلبات نقدية معلقة",
+    "cashier.waitingCustomers": "في انتظار العملاء...",
+    "cashier.confirmPayment": "تأكيد استلام الدفع",
 
     // Kitchen Page
     "kitchen.title": "نظام عرض المطبخ",
     "kitchen.liveConnection": "اتصال مباشر",
-    "kitchen.markReady": "وسم كجاهز",
+    "kitchen.markReady": "تحديد كجاهز",
     "kitchen.orderNumber": "الطلب #{number}",
     "kitchen.items": "العناصر",
     "kitchen.noActiveOrders": "لا توجد طلبات نشطة",
+    "kitchen.loading": "جاري تحميل شاشة المطبخ...",
 
     // Queue Page
-    "queue.title": "حالة الطلب",
-    "queue.subtitle": "يرجى انتظار رقمك",
+    "queue.title": "حالة الطلبات",
+    "queue.subtitle": "يرجى انتظار ظهور رقمك",
     "queue.selectBranch": "اختر فرع",
     "queue.noOrders": "لا توجد طلبات جاهزة حتى الآن",
     "queue.ready": "جاهز",
+    "queue.readyToServe": "جاهز للاستلام",
+
+    // Order Management (Admin)
+    "orderManagement.title": "إدارة الطلبات",
+    "orderManagement.switchBranch": "تغيير الفرع",
+    "orderManagement.selectBranchPrompt": "يرجى اختيار الفرع لإدارة الطلبات.",
+    "orderManagement.noOrders": "لا توجد طلبات لهذا الفرع.",
+    "orderManagement.markReady": "تحديد كجاهز",
+    "orderManagement.note": "ملاحظة",
 
     // Admin Page
     "admin.title": "إدارة القائمة",
     "admin.addNewDrink": "إضافة مشروب جديد",
+    "admin.updateDrink": "تعديل المشروب",
     "admin.loading": "جاري التحميل...",
     "admin.title_field": "العنوان",
     "admin.description_field": "الوصف",
@@ -334,7 +437,8 @@ export const translations = {
     "admin.coffeeType": "نوع القهوة",
     "admin.image": "رابط الصورة",
     "admin.create": "إنشاء المشروب",
-    "admin.deleteConfirm": "حذف {title}؟",
+    "admin.update": "تعديل",
+    "admin.deleteConfirm": "هل أنت متأكد من حذف {title}؟",
     "admin.delete": "حذف",
     "admin.edit": "تعديل",
     "admin.save": "حفظ",
@@ -359,32 +463,24 @@ export const translations = {
     "auth.ownerAccess": "وصول المالك",
     "auth.protected": "هذه المنطقة محمية. يرجى إدخال كلمة المرور.",
     "auth.password": "كلمة المرور",
+    "auth.passwordPlaceholder": "أدخل كلمة المرور",
+    "auth.unlock": "دخول",
     "auth.login": "تسجيل الدخول",
-    "auth.unauthorized": "غير مرخص",
+    "auth.unauthorized": "غير مصرح",
+    "auth.invalidPassword": "كلمة المرور غير صحيحة",
 
     // Errors & Messages
-    "error.failedLoadMenu": "فشل تحميل القائمة. يرجى المحاولة لاحقاً",
+    "error.failedLoadMenu": "فشل تحميل القائمة. يرجى المحاولة لاحقاً.",
     "error.failedLoadOrders": "فشل تحميل الطلبات",
     "error.failedPlaceOrder": "فشل تقديم الطلب: {error}",
     "error.selectBranchFirst": "يرجى اختيار فرع أولاً",
-    "error.noConnection": "لا توجد اتصال",
+    "error.noConnection": "لا يوجد اتصال",
 
     // Success Messages
     "success.orderPlaced": "تم تقديم الطلب بنجاح!",
     "success.orderUpdated": "تم تحديث الطلب بنجاح",
     "success.drinkCreated": "تم إنشاء المشروب بنجاح",
     "success.drinkDeleted": "تم حذف المشروب بنجاح",
-
-    // Cart
-    "cart.title": "سلة التسوق",
-    "cart.empty": "سلتك فارغة",
-    "cart.subtotal": "المجموع الفرعي",
-    "cart.tax": "الضريبة",
-    "cart.total": "الإجمالي",
-    "cart.checkout": "الدفع",
-    "cart.continueShopping": "مراجعة البحث",
-    "cart.remove": "إزالة",
-    "cart.quantity": "الكمية",
 
     // Buttons & Common
     "btn.add": "إضافة",
@@ -402,7 +498,9 @@ export const translations = {
     "btn.settings": "الإعدادات",
     "btn.apply": "تطبيق",
 
-    // Generic Terms
+    // Generic Terms & Currency
+    "term.egp": "ج.م",
+    "term.currency": "جنيه",
     "term.loading": "جاري التحميل...",
     "term.error": "خطأ",
     "term.success": "نجح",

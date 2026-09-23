@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react'
 import { InstitutionSelector } from '@/components/features/InstitutionSelector'
 import { Settings } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function QueuePage() {
+    const { t } = useLanguage()
     const [institutionId, setInstitutionId] = useState(null)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
@@ -20,16 +22,13 @@ export default function QueuePage() {
     // Poll for orders frequently (every 3s)
     const { data: orders = [] } = useQuery({
         queryKey: ['orders', institutionId],
-        queryFn: () => fetchOrders(institutionId), // fetchOrders handles param now
+        queryFn: () => fetchOrders(institutionId),
         enabled: !!institutionId,
         refetchInterval: 3000
     })
 
     // Filter orders
     const ready = orders.filter(o => o.status === 'ready')
-
-    // Optional: Auto-scroll or pagination if list is too long?
-    // For now, simple list.
 
     // Fetch institutions to lookup name
     const { data: institutions = [] } = useQuery({
@@ -44,10 +43,10 @@ export default function QueuePage() {
             {/* Header */}
             <header className="mb-8 text-center border-b border-rich-black-800 pb-4 relative">
                 <h1 className="text-4xl md:text-6xl font-amiri font-bold text-gold-400 tracking-wider">
-                    {currentBranch ? currentBranch.name : 'ORDER STATUS'}
+                    {currentBranch ? currentBranch.name : t('queue.title')}
                 </h1>
                 <p className="text-rich-black-400 mt-2 text-lg uppercase tracking-widest">
-                    {currentBranch ? 'Please wait for your number' : 'Select a branch'}
+                    {currentBranch ? t('queue.subtitle') : t('queue.selectBranch')}
                 </p>
 
                 {/* Settings Trigger - Top Right */}
@@ -68,7 +67,7 @@ export default function QueuePage() {
 
                     <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-emerald-400 uppercase tracking-widest flex items-center justify-center gap-3 relative z-10">
                         <span className="w-4 h-4 rounded-full bg-emerald-400 animate-bounce" />
-                        Ready to Serve
+                        {t('queue.readyToServe')}
                     </h2>
 
                     <div className="grid grid-cols-1 gap-4 content-start relative z-10">
@@ -92,15 +91,13 @@ export default function QueuePage() {
 
                         {ready.length === 0 && (
                             <div className="text-center text-rich-black-500 mt-20 italic text-xl">
-                                No orders ready yet
+                                {t('queue.noOrders')}
                             </div>
                         )}
                     </div>
                 </div>
 
             </div>
-
-
 
             <InstitutionSelector
                 isOpen={isSettingsOpen}
@@ -109,7 +106,7 @@ export default function QueuePage() {
                     setInstitutionId(inst._id)
                     localStorage.setItem('queueSettings_instId', inst._id)
                     setIsSettingsOpen(false)
-                    window.location.reload() // Reload to refresh query
+                    window.location.reload()
                 }}
             />
         </div>

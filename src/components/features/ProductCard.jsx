@@ -39,7 +39,7 @@ export function ProductCard({ product, onSelect }) {
                     <p className="text-sm text-rich-black-300 line-clamp-2 mb-3">{product.description}</p>
                     <div className="flex items-center justify-between">
                         <span className="font-sans font-bold text-gold-400 text-lg">
-                            {basePrice} {t('term.price').split(' ')[1] || 'EGP'}
+                            {basePrice} {t('term.egp')}
                         </span>
                         <span className="text-xs uppercase tracking-wider text-rich-black-500 font-semibold border border-rich-black-700 px-2 py-1 rounded">
                             {product.coffeeType}

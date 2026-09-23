@@ -13,7 +13,7 @@ export function LanguageProvider({ children }) {
     // Load saved language on mount
     useEffect(() => {
         const savedLang = localStorage.getItem("app-language");
-        if (savedLang && ["en", "ar", "de"].includes(savedLang)) {
+        if (savedLang && ["en", "ar"].includes(savedLang)) {
             setLanguage(savedLang);
             document.documentElement.dir = "ltr";
             document.documentElement.lang = savedLang;
@@ -29,7 +29,7 @@ export function LanguageProvider({ children }) {
 
     const t = (key, variables = {}) => {
         // @ts-ignore
-        let translation = translations[language][key] || translations["en"][key] || key;
+        let translation = translations[language]?.[key] || translations["en"]?.[key] || key;
 
         // Replace variables in the translation string
         Object.keys(variables).forEach(varName => {
