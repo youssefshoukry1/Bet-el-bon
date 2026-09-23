@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Banknote, Smartphone, Building2 } from 'lucide-react'
+import { ArrowLeft, Building2, DollarSign, Banknote, CreditCard } from 'lucide-react'
 import Link from 'next/link'
 import { useMutation } from '@tanstack/react-query'
 import { createOrder } from '@/lib/api'
@@ -201,7 +201,7 @@ export default function CheckoutPage() {
                                         onClick={() => setPaymentMethod('cash')}
                                         className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${paymentMethod === 'cash' ? 'border-gold-500 bg-gold-500/10 text-gold-400' : 'border-rich-black-700 hover:bg-rich-black-800 text-rich-black-400'}`}
                                     >
-                                        <Banknote size={20} className="mb-1" />
+                                        <DollarSign size={20} className="mb-1" />
                                         <span className="font-bold text-sm">{t('checkout.cash')}</span>
                                     </button>
 
@@ -209,7 +209,7 @@ export default function CheckoutPage() {
                                         onClick={() => setPaymentMethod('paymob')}
                                         className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${paymentMethod === 'paymob' ? 'border-gold-500 bg-gold-500/10 text-gold-400' : 'border-rich-black-700 hover:bg-rich-black-800 text-rich-black-400'}`}
                                     >
-                                        <Smartphone size={20} className="mb-1" />
+                                        <CreditCard size={20} className="mb-1" />
                                         <span className="font-bold text-sm">{t('checkout.paymob')}</span>
                                     </button>
                                 </div>
